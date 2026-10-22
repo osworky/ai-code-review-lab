@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "findings": [
+    {
+      "rule_id": "path-traversal",
+      "category": "security",
+      "severity": "blocker",
+      "location": {
+        "file": "scripts/importar_tarifas.py",
+        "line": 18
+      },
+      "message": "Se eliminó la comprobación que resolvía la ruta y rechazaba archivos fuera de data/. Ahora DATA_DIR / nombre se abre tal cual: un nombre como ../../etc/passwd o una ruta absoluta (que reemplaza a DATA_DIR en pathlib) permite leer archivos arbitrarios, y el docstring sigue prometiendo la restricción a data/.",
+      "suggested_fix": "Restaurar ruta = (DATA_DIR / nombre).resolve() y rechazar con ValueError si DATA_DIR no está en ruta.parents."
+    },
+    {
+      "rule_id": "missing-test-new-option",
+      "category": "missing_tests",
+      "severity": "advisory",
+      "location": {
+        "file": "scripts/importar_tarifas.py",
+        "line": 24
+      },
+      "message": "Se añade la opción --moneda (lógica nueva de filtrado y de análisis de argumentos) y el diff no incluye ningún test ni actualización del README que la describa.",
+      "suggested_fix": "Añadir tests en tests/ para --moneda (filtra, sin coincidencias, argumentos inválidos) y documentarla en el README."
+    },
+    {
+      "rule_id": "unused-import",
+      "category": "style",
+      "severity": "info",
+      "location": {
+        "file": "scripts/importar_tarifas.py",
+        "line": 9
+      },
+      "message": "Se importa json pero no se usa en ningún punto del diff visible.",
+      "suggested_fix": "Quitar el import si no se necesita."
+    }
+  ]
+}

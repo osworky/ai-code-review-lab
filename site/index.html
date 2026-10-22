@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="es" data-lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ai-code-review-lab · Mide antes de confiar / Measure before you trust</title>
+<meta name="description" content="Cómo evaluar un revisor de código con IA, con datos y con sus límites. A skill, benchmarks and a guide. / How to evaluate an AI code reviewer, with data and with its limits.">
+<meta property="og:title" content="ai-code-review-lab · Mide antes de confiar / Measure before you trust">
+<meta property="og:description" content="Cómo evaluar un revisor de código con IA, con datos y con sus límites. A skill, benchmarks and a guide. / How to evaluate an AI code reviewer, with data and with its limits.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://osworky.github.io/ai-code-review-lab/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232a78d6'/%3E%3Cpath d='M8 17l5 5 11-12' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="">ai-code-review-lab</a>
+<nav class="nav" aria-label="Principal">
+<a href="" aria-current="page"><span lang="es">Inicio</span><span lang="en">Home</span></a>
+<a href="guia/"><span lang="es">Guía</span><span lang="en">Guide</span></a>
+<a href="caso/"><span lang="es">Caso de estudio</span><span lang="en">Case study</span></a>
+<a href="roadmap/">Roadmap</a>
+<a href="https://github.com/osworky/ai-code-review-lab">GitHub</a>
+</nav>
+<div class="lang" role="group" aria-label="Idioma / Language"><button type="button" data-l="es" aria-pressed="true">ES</button><button type="button" data-l="en" aria-pressed="false">EN</button></div>
+</div></header>
+
+<main class="wrap">
+<div class="hero">
+<h1>ai-code-review-lab</h1>
+<p class="tag"><span lang="es"><strong>Mide antes de confiar.</strong> Cómo evaluar un revisor de código con IA, con datos y con sus límites.</span><span lang="en"><strong>Measure before you trust.</strong> How to evaluate an AI code reviewer, with data and with its limits.</span></p>
+<div class="buttons"><a class="btn primary" href="https://github.com/osworky/ai-code-review-lab"><span lang="es">Ver el repositorio</span><span lang="en">View the repository</span></a><a class="btn" href="guia/"><span lang="es">Leer la guía</span><span lang="en">Read the guide</span></a><a class="btn" href="caso/"><span lang="es">Caso de estudio</span><span lang="en">Case study</span></a></div>
+</div>
+
+<section id="que-es"><h2><span lang="es">Qué es</span><span lang="en">What it is</span></h2>
+<p class="lead"><span lang="es">Un laboratorio para responder una pregunta concreta: <em>¿cuánto se puede confiar en un revisor de código con IA?</em> Todo lo que se afirma aquí viene con su muestra, su intervalo y lo que no se puede concluir.</span><span lang="en">A lab to answer one concrete question: <em>how far can you trust an AI code reviewer?</em> Everything claimed here comes with its sample, its interval and what cannot be concluded.</span></p>
+<div class="cards">
+<div class="card"><h3><span lang="es">Una skill</span><span lang="en">A skill</span></h3><p><span lang="es">Para Claude Code: revisa por tipo de archivo, valida con un script lo que devuelve el modelo y registra qué decide una persona con cada hallazgo.</span><span lang="en">For Claude Code: it reviews by file type, validates the model output with a script and records what a person decides about each finding.</span></p></div>
+<div class="card"><h3><span lang="es">Bancos de pruebas</span><span lang="en">Benchmarks</span></h3><p><span lang="es">Módulos ficticios con defectos plantados y respuesta conocida, y una puntuación automática, sin juicio humano.</span><span lang="en">Fictional modules with planted defects and a known answer, scored automatically with no human judgement.</span></p></div>
+<div class="card"><h3><span lang="es">Una guía</span><span lang="en">A guide</span></h3><p><span lang="es">La rúbrica, el registro de hallazgos, cómo se arma un banco y cómo se decide una fase de despliegue.</span><span lang="en">The rubric, the findings ledger, how a benchmark is built and how a rollout phase is decided.</span></p></div>
+</div></section>
+
+<section id="resultados"><h2><span lang="es">Resultados</span><span lang="en">Results</span></h2>
+<p class="lead"><span lang="es">Un modelo, un etiquetador y muestras pequeñas: es un <strong>piloto</strong>, no una calibración.</span><span lang="en">One model, one labeller and small samples: this is a <strong>pilot</strong>, not a calibration.</span></p>
+<figure class="chart" lang="es" aria-labelledby="precision-es"><figcaption id="precision-es">Precisión sobre 63 hallazgos etiquetados</figcaption><p class="sub">Un punto por medida y una línea con su intervalo de Wilson al 95 %. Son hallazgos que el revisor levantó, no una muestra aleatoria.</p><div class="svgwrap"><svg viewBox="0 0 640 176" role="img" aria-label="Precisión: 40 % accionables, 79 % accionables o menores, 21 % ruido"><line class="grid" x1="230" x2="230" y1="8" y2="146"/><text class="ax" x="230" y="170" text-anchor="middle">0 %</text><line class="grid" x1="300" x2="300" y1="8" y2="146"/><text class="ax" x="300" y="170" text-anchor="middle">25 %</text><line class="grid" x1="370" x2="370" y1="8" y2="146"/><text class="ax" x="370" y="170" text-anchor="middle">50 %</text><line class="grid" x1="440" x2="440" y1="8" y2="146"/><text class="ax" x="440" y="170" text-anchor="middle">75 %</text><line class="grid" x1="510" x2="510" y1="8" y2="146"/><text class="ax" x="510" y="170" text-anchor="middle">100 %</text><g><title>Accionables (A): 40 % (29–52 %), 25 de 63</title>
+      <text class="h" x="216" y="35" text-anchor="end">Accionables (A)</text>
+      <line class="whisker st1" x1="309.888838812466" x2="375.6540566298932" y1="31" y2="31"/>
+      <circle class="s1 ring" cx="341.1111111111111" cy="31" r="6"/>
+      <text class="v" x="524" y="35">40 % (29–52 %)</text></g><g><title>Accionables o menores (A + M): 79 % (68–88 %), 50 de 63</title>
+      <text class="h" x="216" y="81" text-anchor="end">Accionables o menores (A + M)</text>
+      <line class="whisker st1" x1="419.9238646308755" x2="475.0694329562558" y1="77" y2="77"/>
+      <circle class="s1 ring" cx="452.2222222222222" cy="77" r="6"/>
+      <text class="v" x="524" y="81">79 % (68–88 %)</text></g><g><title>Ruido (R): 21 % (12–32 %), 13 de 63</title>
+      <text class="h" x="216" y="127" text-anchor="end">Ruido (R)</text>
+      <line class="whisker st1" x1="264.93056704374413" x2="320.0761353691245" y1="123" y2="123"/>
+      <circle class="s1 ring" cx="287.77777777777777" cy="123" r="6"/>
+      <text class="v" x="524" y="127">21 % (12–32 %)</text></g></svg></div></figure><figure class="chart" lang="en" aria-labelledby="precision-en"><figcaption id="precision-en">Precision over 63 labelled findings</figcaption><p class="sub">One dot per measure and a line for its 95 % Wilson interval. These are findings the reviewer raised, not a random sample.</p><div class="svgwrap"><svg viewBox="0 0 640 176" role="img" aria-label="Precision: 40 % actionable, 79 % actionable or minor, 21 % noise"><line class="grid" x1="230" x2="230" y1="8" y2="146"/><text class="ax" x="230" y="170" text-anchor="middle">0 %</text><line class="grid" x1="300" x2="300" y1="8" y2="146"/><text class="ax" x="300" y="170" text-anchor="middle">25 %</text><line class="grid" x1="370" x2="370" y1="8" y2="146"/><text class="ax" x="370" y="170" text-anchor="middle">50 %</text><line class="grid" x1="440" x2="440" y1="8" y2="146"/><text class="ax" x="440" y="170" text-anchor="middle">75 %</text><line class="grid" x1="510" x2="510" y1="8" y2="146"/><text class="ax" x="510" y="170" text-anchor="middle">100 %</text><g><title>Actionable (A): 40 % (29–52 %), 25 of 63</title>
+      <text class="h" x="216" y="35" text-anchor="end">Actionable (A)</text>
+      <line class="whisker st1" x1="309.888838812466" x2="375.6540566298932" y1="31" y2="31"/>
+      <circle class="s1 ring" cx="341.1111111111111" cy="31" r="6"/>
+      <text class="v" x="524" y="35">40 % (29–52 %)</text></g><g><title>Actionable or minor (A + M): 79 % (68–88 %), 50 of 63</title>
+      <text class="h" x="216" y="81" text-anchor="end">Actionable or minor (A + M)</text>
+      <line class="whisker st1" x1="419.9238646308755" x2="475.0694329562558" y1="77" y2="77"/>
+      <circle class="s1 ring" cx="452.2222222222222" cy="77" r="6"/>
+      <text class="v" x="524" y="81">79 % (68–88 %)</text></g><g><title>Noise (R): 21 % (12–32 %), 13 of 63</title>
+      <text class="h" x="216" y="127" text-anchor="end">Noise (R)</text>
+      <line class="whisker st1" x1="264.93056704374413" x2="320.0761353691245" y1="123" y2="123"/>
+      <circle class="s1 ring" cx="287.77777777777777" cy="123" r="6"/>
+      <text class="v" x="524" y="127">21 % (12–32 %)</text></g></svg></div></figure><details class="data"><summary><span lang="es">Ver los datos en una tabla</span><span lang="en">View the data as a table</span></summary><div class="table-wrap"><table><thead><tr><th><span lang="es">Experimento</span><span lang="en">Experiment</span></th><th class="num">n</th><th class="num">A</th><th class="num">M</th><th class="num">R</th><th class="num"><span lang="es">Precisión amplia</span><span lang="en">Broad precision</span></th></tr></thead><tbody><tr><td><span lang="es">Auditoría legacy de un formulario</span><span lang="en">Legacy audit of a form</span></td><td class="num">19</td><td class="num">11</td><td class="num">4</td><td class="num">4</td><td class="num">79 %</td></tr><tr><td><span lang="es">Revisores especializados y router</span><span lang="en">Specialised reviewers and router</span></td><td class="num">15</td><td class="num">7</td><td class="num">5</td><td class="num">3</td><td class="num">80 %</td></tr><tr><td><span lang="es">Autorrevisión del procedimiento (ronda 3)</span><span lang="en">Self-review of the procedure (round 3)</span></td><td class="num">6</td><td class="num">1</td><td class="num">5</td><td class="num">0</td><td class="num">100 %</td></tr><tr><td><span lang="es">Revisión diferencial</span><span lang="en">Differential review</span></td><td class="num">12</td><td class="num">4</td><td class="num">5</td><td class="num">3</td><td class="num">75 %</td></tr><tr><td><span lang="es">Exceso del piloto de recall</span><span lang="en">Excess findings of the recall pilot</span></td><td class="num">11</td><td class="num">2</td><td class="num">6</td><td class="num">3</td><td class="num">73 %</td></tr><tr><td><strong><span lang="es">Total</span><span lang="en">Total</span></strong></td><td class="num"><strong>63</strong></td><td class="num"><strong>25</strong></td><td class="num"><strong>25</strong></td><td class="num"><strong>13</strong></td><td class="num"><strong>79 %</strong></td></tr></tbody></table></div></details>
+<figure class="chart" lang="es" aria-labelledby="recall-es"><figcaption id="recall-es">Recall del piloto: defectos conocidos que vio el revisor</figcaption><p class="sub">Tres casos con respuesta conocida, tres corridas y un control sin el foco de cada tipo de archivo. La barra gris es el total de elementos.</p><div class="svgwrap"><p class="legend"><span><i class="l1"></i><span lang="es">Proceso completo (3 corridas)</span><span lang="en">Full process (3 runs)</span></span><span><i class="l2"></i><span lang="es">Control sin foco (1 corrida)</span><span lang="en">Control without focus (1 run)</span></span></p><svg viewBox="0 0 640 438" role="img" aria-label="Recall por caso y corrida"><text class="h" x="0" y="18">Validación de una API pública (PR)</text><g><title>Validación de una API pública (PR) · Corrida 1: 0 de 5</title>
+        <text x="138" y="40" text-anchor="end">Corrida 1</text>
+        <rect class="track" x="150" y="28" width="330" height="14" rx="4"/>
+        <text class="v" x="492" y="40">0 de 5</text></g><g><title>Validación de una API pública (PR) · Corrida 2: 0 de 5</title>
+        <text x="138" y="66" text-anchor="end">Corrida 2</text>
+        <rect class="track" x="150" y="54" width="330" height="14" rx="4"/>
+        <text class="v" x="492" y="66">0 de 5</text></g><g><title>Validación de una API pública (PR) · Corrida 3: 0 de 5</title>
+        <text x="138" y="92" text-anchor="end">Corrida 3</text>
+        <rect class="track" x="150" y="80" width="330" height="14" rx="4"/>
+        <text class="v" x="492" y="92">0 de 5</text></g><g><title>Validación de una API pública (PR) · Control: 0 de 5</title>
+        <text x="138" y="118" text-anchor="end">Control</text>
+        <rect class="track" x="150" y="106" width="330" height="14" rx="4"/>
+        <text class="v" x="492" y="118">0 de 5</text></g><text class="h" x="0" y="162">Formulario de contacto (auditoría legacy)</text><g><title>Formulario de contacto (auditoría legacy) · Corrida 1: 5 de 11</title>
+        <text x="138" y="184" text-anchor="end">Corrida 1</text>
+        <rect class="track" x="150" y="172" width="330" height="14" rx="4"/><path class="s1" d="M150 172 h146 a4 4 0 0 1 4 4 v6 a4 4 0 0 1 -4 4 h-146 z"/>
+        <text class="v" x="492" y="184">5 de 11</text></g><g><title>Formulario de contacto (auditoría legacy) · Corrida 2: 4 de 11</title>
+        <text x="138" y="210" text-anchor="end">Corrida 2</text>
+        <rect class="track" x="150" y="198" width="330" height="14" rx="4"/><path class="s1" d="M150 198 h116 a4 4 0 0 1 4 4 v6 a4 4 0 0 1 -4 4 h-116 z"/>
+        <text class="v" x="492" y="210">4 de 11</text></g><g><title>Formulario de contacto (auditoría legacy) · Corrida 3: 3 de 11</title>
+        <text x="138" y="236" text-anchor="end">Corrida 3</text>
+        <rect class="track" x="150" y="224" width="330" height="14" rx="4"/><path class="s1" d="M150 224 h86 a4 4 0 0 1 4 4 v6 a4 4 0 0 1 -4 4 h-86 z"/>
+        <text class="v" x="492" y="236">3 de 11</text></g><g><title>Formulario de contacto (auditoría legacy) · Control: 3 de 11</title>
+        <text x="138" y="262" text-anchor="end">Control</text>
+        <rect class="track" x="150" y="250" width="330" height="14" rx="4"/><path class="s2" d="M150 250 h86 a4 4 0 0 1 4 4 v6 a4 4 0 0 1 -4 4 h-86 z"/>
+        <text class="v" x="492" y="262">3 de 11</text></g><text class="h" x="0" y="306">Lógica de cotización y datos</text><g><title>Lógica de cotización y datos · Corrida 1: 2 de 12</title>
+        <text x="138" y="328" text-anchor="end">Corrida 1</text>
+        <rect class="track" x="150" y="316" width="330" height="14" rx="4"/><path class="s1" d="M150 316 h51 a4 4 0 0 1 4 4 v6 a4 4 0 0 1 -4 4 h-51 z"/>
+        <text class="v" x="492" y="328">2 de 12</text></g><g><title>Lógica de cotización y datos · Corrida 2: 4 de 12</title>
+        <text x="138" y="354" text-anchor="end">Corrida 2</text>
+        <rect class="track" x="150" y="342" width="330" height="14" rx="4"/><path class="s1" d="M150 342 h106 a4 4 0 0 1 4 4 v6 a4 4 0 0 1 -4 4 h-106 z"/>
+        <text class="v" x="492" y="354">4 de 12</text></g><g><title>Lógica de cotización y datos · Corrida 3: 1 de 12</title>
+        <text x="138" y="380" text-anchor="end">Corrida 3</text>
+        <rect class="track" x="150" y="368" width="330" height="14" rx="4"/><path class="s1" d="M150 368 h23.5 a4 4 0 0 1 4 4 v6 a4 4 0 0 1 -4 4 h-23.5 z"/>
+        <text class="v" x="492" y="380">1 de 12</text></g><g><title>Lógica de cotización y datos · Control: 1 de 12</title>
+        <text x="138" y="406" text-anchor="end">Control</text>
+        <rect class="track" x="150" y="394" width="330" height="14" rx="4"/><path class="s2" d="M150 394 h23.5 a4 4 0 0 1 4 4 v6 a4 4 0 0 1 -4 4 h-23.5 z"/>
+        <text class="v" x="492" y="406">1 de 12</text></g></svg></div></figure><figure class="chart" lang="en" aria-labelledby="recall-en"><figcaption id="recall-en">Pilot recall: known defects the reviewer found</figcaption><p class="sub">Three cases with a known answer, three runs and a control without the per-file-type focus. The grey bar is the total number of elements.</p><div class="svgwrap"><p class="legend"><span><i class="l1"></i><span lang="es">Proceso completo (3 corridas)</span><span lang="en">Full process (3 runs)</span></span><span><i class="l2"></i><span lang="es">Control sin foco (1 corrida)</span><span lang="en">Control without focus (1 run)</span></span></p><svg viewBox="0 0 640 438" role="img" aria-label="Recall per case and run"><text class="h" x="0" y="18">Public API validation (PR)</text><g><title>Public API validation (PR) · Run 1: 0 of 5</title>
+        <text x="138" y="40" text-anchor="end">Run 1</text>
+        <rect class="track" x="150" y="28" width="330" height="14" rx="4"/>
+        <text class="v" x="492" y="40">0 of 5</text></g><g><title>Public API validation (PR) · Run 2: 0 of 5</title>
+        <text x="138" y="66" text-anchor="end">Run 2</text>
+        <rect class="track" x="150" y="54" width="330" height="14" rx="4"/>
+        <text class="v" x="492" y="66">0 of 5</text></g><g><title>Public API validation (PR) · Run 3: 0 of 5</title>
+        <text x="138" y="92" text-anchor="end">Run 3</text>
+        <rect class="track" x="150" y="80" width="330" height="14" rx="4"/>
+        <text class="v" x="492" y="92">0 of 5</text></g><g><title>Public API validation (PR) · Control: 0 of 5</title>
+        <text x="138" y="118" text-anchor="end">Control</text>
+        <rect class="track" x="150" y="106" width="330" height="14" rx="4"/>
+        <text class="v" x="492" y="118">0 of 5</text></g><text class="h" x="0" y="162">Contact form (legacy audit)</text><g><title>Contact form (legacy audit) · Run 1: 5 of 11</title>
+        <text x="138" y="184" text-anchor="end">Run 1</text>
+        <rect class="track" x="150" y="172" width="330" height="14" rx="4"/><path class="s1" d="M150 172 h146 a4 4 0 0 1 4 4 v6 a4 4 0 0 1 -4 4 h-146 z"/>
+        <text class="v" x="492" y="184">5 of 11</text></g><g><title>Contact form (legacy audit) · Run 2: 4 of 11</title>
+        <text x="138" y="210" text-anchor="end">Run 2</text>
+        <rect class="track" x="150" y="198" width="330" height="14" rx="4"/><path class="s1" d="M150 198 h116 a4 4 0 0 1 4 4 v6 a4 4 0 0 1 -4 4 h-116 z"/>
+        <text class="v" x="492" y="210">4 of 11</text></g><g><title>Contact form (legacy audit) · Run 3: 3 of 11</title>
+        <text x="138" y="236" text-anchor="end">Run 3</text>
+        <rect class="track" x="150" y="224" width="330" height="14" rx="4"/><path class="s1" d="M150 224 h86 a4 4 0 0 1 4 4 v6 a4 4 0 0 1 -4 4 h-86 z"/>
+        <text class="v" x="492" y="236">3 of 11</text></g><g><title>Contact form (legacy audit) · Control: 3 of 11</title>
+        <text x="138" y="262" text-anchor="end">Control</text>
+        <rect class="track" x="150" y="250" width="330" height="14" rx="4"/><path class="s2" d="M150 250 h86 a4 4 0 0 1 4 4 v6 a4 4 0 0 1 -4 4 h-86 z"/>
+        <text class="v" x="492" y="262">3 of 11</text></g><text class="h" x="0" y="306">Quote logic and data</text><g><title>Quote logic and data · Run 1: 2 of 12</title>
+        <text x="138" y="328" text-anchor="end">Run 1</text>
+        <rect class="track" x="150" y="316" width="330" height="14" rx="4"/><path class="s1" d="M150 316 h51 a4 4 0 0 1 4 4 v6 a4 4 0 0 1 -4 4 h-51 z"/>
+        <text class="v" x="492" y="328">2 of 12</text></g><g><title>Quote logic and data · Run 2: 4 of 12</title>
+        <text x="138" y="354" text-anchor="end">Run 2</text>
+        <rect class="track" x="150" y="342" width="330" height="14" rx="4"/><path class="s1" d="M150 342 h106 a4 4 0 0 1 4 4 v6 a4 4 0 0 1 -4 4 h-106 z"/>
+        <text class="v" x="492" y="354">4 of 12</text></g><g><title>Quote logic and data · Run 3: 1 of 12</title>
+        <text x="138" y="380" text-anchor="end">Run 3</text>
+        <rect class="track" x="150" y="368" width="330" height="14" rx="4"/><path class="s1" d="M150 368 h23.5 a4 4 0 0 1 4 4 v6 a4 4 0 0 1 -4 4 h-23.5 z"/>
+        <text class="v" x="492" y="380">1 of 12</text></g><g><title>Quote logic and data · Control: 1 of 12</title>
+        <text x="138" y="406" text-anchor="end">Control</text>
+        <rect class="track" x="150" y="394" width="330" height="14" rx="4"/><path class="s2" d="M150 394 h23.5 a4 4 0 0 1 4 4 v6 a4 4 0 0 1 -4 4 h-23.5 z"/>
+        <text class="v" x="492" y="406">1 of 12</text></g></svg></div></figure><details class="data"><summary><span lang="es">Ver los datos en una tabla</span><span lang="en">View the data as a table</span></summary><div class="table-wrap"><table><thead><tr><th><span lang="es">Caso</span><span lang="en">Case</span></th><th class="num"><span lang="es">Elementos</span><span lang="en">Elements</span></th><th class="num"><span lang="es">Corridas</span><span lang="en">Runs</span></th><th class="num"><span lang="es">Control</span><span lang="en">Control</span></th><th class="num"><span lang="es">Unión</span><span lang="en">Union</span></th><th class="num"><span lang="es">Consenso</span><span lang="en">Consensus</span></th><th class="num"><span lang="es">Solapamiento</span><span lang="en">Overlap</span></th></tr></thead><tbody><tr><td><span lang="es">Validación de una API pública (PR)</span><span lang="en">Public API validation (PR)</span></td><td class="num">5</td><td class="num">0 / 0 / 0</td><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num"><span lang="es">0,42</span><span lang="en">0.42</span></td></tr><tr><td><span lang="es">Formulario de contacto (auditoría legacy)</span><span lang="en">Contact form (legacy audit)</span></td><td class="num">11</td><td class="num">5 / 4 / 3</td><td class="num">3</td><td class="num">6</td><td class="num">4</td><td class="num"><span lang="es">0,59</span><span lang="en">0.59</span></td></tr><tr><td><span lang="es">Lógica de cotización y datos</span><span lang="en">Quote logic and data</span></td><td class="num">12</td><td class="num">2 / 4 / 1</td><td class="num">1</td><td class="num">4</td><td class="num">2</td><td class="num"><span lang="es">0,26</span><span lang="en">0.26</span></td></tr></tbody></table></div></details>
+<figure class="chart" lang="es" aria-labelledby="bench-es"><figcaption id="bench-es">Banco v1: 18 defectos plantados, y el revisor los vio casi todos</figcaption><p class="sub">El control sin foco también: es un efecto techo. El banco era demasiado fácil.</p><div class="svgwrap"><svg viewBox="0 0 640 150" role="img" aria-label="Banco v1: defectos vistos por corrida"><text class="h" x="0" y="18">18 defectos plantados</text><g><title>18 defectos plantados · Corrida 1: 18 de 18</title>
+        <text x="138" y="40" text-anchor="end">Corrida 1</text>
+        <rect class="track" x="150" y="28" width="330" height="14" rx="4"/><path class="s1" d="M150 28 h326 a4 4 0 0 1 4 4 v6 a4 4 0 0 1 -4 4 h-326 z"/>
+        <text class="v" x="492" y="40">18 de 18</text></g><g><title>18 defectos plantados · Corrida 2: 18 de 18</title>
+        <text x="138" y="66" text-anchor="end">Corrida 2</text>
+        <rect class="track" x="150" y="54" width="330" height="14" rx="4"/><path class="s1" d="M150 54 h326 a4 4 0 0 1 4 4 v6 a4 4 0 0 1 -4 4 h-326 z"/>
+        <text class="v" x="492" y="66">18 de 18</text></g><g><title>18 defectos plantados · Corrida 3: 17 de 18</title>
+        <text x="138" y="92" text-anchor="end">Corrida 3</text>
+        <rect class="track" x="150" y="80" width="330" height="14" rx="4"/><path class="s1" d="M150 80 h307.6666666666667 a4 4 0 0 1 4 4 v6 a4 4 0 0 1 -4 4 h-307.6666666666667 z"/>
+        <text class="v" x="492" y="92">17 de 18</text></g><g><title>18 defectos plantados · Control: 18 de 18</title>
+        <text x="138" y="118" text-anchor="end">Control</text>
+        <rect class="track" x="150" y="106" width="330" height="14" rx="4"/><path class="s2" d="M150 106 h326 a4 4 0 0 1 4 4 v6 a4 4 0 0 1 -4 4 h-326 z"/>
+        <text class="v" x="492" y="118">18 de 18</text></g></svg></div></figure><figure class="chart" lang="en" aria-labelledby="bench-en"><figcaption id="bench-en">Benchmark v1: 18 planted defects, and the reviewer found nearly all of them</figcaption><p class="sub">The control without focus did too: a ceiling effect. The benchmark was too easy.</p><div class="svgwrap"><svg viewBox="0 0 640 150" role="img" aria-label="Benchmark v1: defects found per run"><text class="h" x="0" y="18">18 planted defects</text><g><title>18 planted defects · Run 1: 18 of 18</title>
+        <text x="138" y="40" text-anchor="end">Run 1</text>
+        <rect class="track" x="150" y="28" width="330" height="14" rx="4"/><path class="s1" d="M150 28 h326 a4 4 0 0 1 4 4 v6 a4 4 0 0 1 -4 4 h-326 z"/>
+        <text class="v" x="492" y="40">18 of 18</text></g><g><title>18 planted defects · Run 2: 18 of 18</title>
+        <text x="138" y="66" text-anchor="end">Run 2</text>
+        <rect class="track" x="150" y="54" width="330" height="14" rx="4"/><path class="s1" d="M150 54 h326 a4 4 0 0 1 4 4 v6 a4 4 0 0 1 -4 4 h-326 z"/>
+        <text class="v" x="492" y="66">18 of 18</text></g><g><title>18 planted defects · Run 3: 17 of 18</title>
+        <text x="138" y="92" text-anchor="end">Run 3</text>
+        <rect class="track" x="150" y="80" width="330" height="14" rx="4"/><path class="s1" d="M150 80 h307.6666666666667 a4 4 0 0 1 4 4 v6 a4 4 0 0 1 -4 4 h-307.6666666666667 z"/>
+        <text class="v" x="492" y="92">17 of 18</text></g><g><title>18 planted defects · Control: 18 of 18</title>
+        <text x="138" y="118" text-anchor="end">Control</text>
+        <rect class="track" x="150" y="106" width="330" height="14" rx="4"/><path class="s2" d="M150 106 h326 a4 4 0 0 1 4 4 v6 a4 4 0 0 1 -4 4 h-326 z"/>
+        <text class="v" x="492" y="118">18 of 18</text></g></svg></div></figure><details class="data"><summary><span lang="es">Ver los datos en una tabla</span><span lang="en">View the data as a table</span></summary><div class="table-wrap"><table><thead><tr><th><span lang="es">Corrida</span><span lang="en">Run</span></th><th class="num"><span lang="es">Defectos vistos</span><span lang="en">Defects found</span></th><th class="num"><span lang="es">Reales</span><span lang="en">Real</span></th><th class="num"><span lang="es">Inventados</span><span lang="en">Invented</span></th><th class="num"><span lang="es">Omisión</span><span lang="en">Omission</span></th><th class="num"><span lang="es">Alarmas en cambios inofensivos</span><span lang="en">Alarms on harmless changes</span></th></tr></thead><tbody><tr><td><span lang="es">Corrida 1</span><span lang="en">Run 1</span></td><td class="num">18 / 18</td><td class="num">9 / 9</td><td class="num">9 / 9</td><td class="num">4 / 4</td><td class="num">0 / 6</td></tr><tr><td><span lang="es">Corrida 2</span><span lang="en">Run 2</span></td><td class="num">18 / 18</td><td class="num">9 / 9</td><td class="num">9 / 9</td><td class="num">4 / 4</td><td class="num">0 / 6</td></tr><tr><td><span lang="es">Corrida 3</span><span lang="en">Run 3</span></td><td class="num">17 / 18</td><td class="num">9 / 9</td><td class="num">8 / 9</td><td class="num">3 / 4</td><td class="num">0 / 6</td></tr><tr><td><span lang="es">Control</span><span lang="en">Control</span></td><td class="num">18 / 18</td><td class="num">9 / 9</td><td class="num">9 / 9</td><td class="num">4 / 4</td><td class="num">0 / 6</td></tr></tbody></table></div></details>
+<div class="callout"><span lang="es"><strong>Lo que enseñó el piloto.</strong> En el caso de la API el revisor encontró 0 de 5 defectos de omisión (los que solo encuentran pruebas adversariales) y en el formulario 6 de 11 entre las tres corridas. El solapamiento entre corridas del mismo caso fue de 0,26 a 0,59.</span><span lang="en"><strong>What the pilot taught.</strong> On the API case the reviewer found 0 of 5 omission defects (the kind only adversarial tests find) and on the form 6 of 11 across the three runs. Overlap between runs of the same case was 0.26 to 0.59.</span></div>
+<div class="callout"><span lang="es"><strong>Efecto techo.</strong> El banco v1 dio 18 de 18 incluso sin el foco: no distingue nada. La v2 (más difícil: PR más grandes, sin comentarios que delaten el defecto) está <strong>construida y todavía sin ejecutar</strong>.</span><span lang="en"><strong>Ceiling effect.</strong> Benchmark v1 gave 18 of 18 even without the focus: it tells nothing apart. Benchmark v2 (harder: larger PRs, no comments that give the defect away) is <strong>built and not yet run</strong>.</span></div>
+</section>
+
+<section id="pruebalo"><h2><span lang="es">Pruébalo</span><span lang="en">Try it</span></h2>
+<p class="lead"><span lang="es">Hace falta Node 20 o superior y Python 3.12.</span><span lang="en">You need Node 20 or later and Python 3.12.</span></p>
+<pre><code>git clone https://github.com/osworky/ai-code-review-lab.git
+cd ai-code-review-lab
+python -m unittest discover -s tests
+cd skills/ai-code-review &amp;&amp; npm install &amp;&amp; npm test</code></pre>
+<p><span lang="es">Para instalar la skill en Claude Code, copia <code>skills/ai-code-review/</code> a <code>~/.claude/skills/ai-code-review/</code> y pide «revisa esta rama con ai-code-review».</span><span lang="en">To install the skill in Claude Code, copy <code>skills/ai-code-review/</code> to <code>~/.claude/skills/ai-code-review/</code> and ask «review this branch with ai-code-review».</span></p>
+</section>
+
+<section id="limites"><h2><span lang="es">Lo que no se puede afirmar</span><span lang="en">What cannot be claimed</span></h2>
+<ul class="plain">
+<li><span lang="es">Que el revisor acierte por categoría de la rúbrica: las etiquetas no la llevan y falta la clase negativa.</span><span lang="en">That the reviewer is right per rubric category: the labels carry none and the negative class is missing.</span></li>
+<li><span lang="es">Que detecte defectos de omisión o de interfaz: en el piloto no vio ninguno de los de la API.</span><span lang="en">That it detects omission or interface defects: in the pilot it found none of the API ones.</span></li>
+<li><span lang="es">Que sirva para subir de fase: ninguna de las 6 categorías llega al mínimo de 30 filas.</span><span lang="en">That it is ready to move up a phase: none of the 6 categories reaches the 30-row minimum.</span></li>
+<li><span lang="es">Nada sobre otros modelos ni otros etiquetadores.</span><span lang="en">Anything about other models or other labellers.</span></li>
+</ul></section>
+</main>
+<footer><div class="wrap">
+<p><span lang="es">Código bajo licencia MIT; guía y textos bajo CC BY 4.0. © 2026 osworky. Cifras de un piloto: un modelo, un etiquetador, muestras pequeñas.</span><span lang="en">Code under the MIT license; guide and texts under CC BY 4.0. © 2026 osworky. Figures from a pilot: one model, one labeller, small samples.</span></p>
+<p><a href="https://github.com/osworky/ai-code-review-lab">github.com/osworky/ai-code-review-lab</a></p>
+</div></footer>
+<script>
+(function () {
+  var root = document.documentElement
+  function pick() {
+    try { var q = new URLSearchParams(location.search).get("lang"); if (q === "es" || q === "en") return q } catch (e) {}
+    try { var s = localStorage.getItem("lang"); if (s === "es" || s === "en") return s } catch (e) {}
+    return ((navigator.language || "es").slice(0, 2) === "en") ? "en" : "es"
+  }
+  function set(l) {
+    root.setAttribute("data-lang", l); root.lang = l
+    document.querySelectorAll(".lang button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-l") === l)) })
+    try { localStorage.setItem("lang", l) } catch (e) {}
+  }
+  document.querySelectorAll(".lang button").forEach(function (b) { b.addEventListener("click", function () { set(b.getAttribute("data-l")) }) })
+  set(pick())
+})()
+</script>
+</body>
+</html>

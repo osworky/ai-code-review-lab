@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "findings": [
+    {
+      "rule_id": "quadratic-loop",
+      "category": "performance",
+      "severity": "advisory",
+      "location": {
+        "file": "src/reporte.ts",
+        "line": 18
+      },
+      "message": "Dentro del bucle sobre cada evento se vuelve a filtrar todo el arreglo para contar los de su zona. Es O(n^2) sobre hasta 2000 eventos (unos 4 millones de comparaciones por reporte) y el resultado es el mismo que incrementar el contador en 1.",
+      "suggested_fix": "Volver a `resumen[e.zona].n += 1`."
+    },
+    {
+      "rule_id": "repeated-linear-lookup",
+      "category": "performance",
+      "severity": "advisory",
+      "location": {
+        "file": "src/reporte.ts",
+        "line": 28
+      },
+      "message": "Se busca cada tarifa con `tarifas.find` dentro del bucle de eventos, lo que es O(eventos x tarifas). Antes se usaba un Map armado una sola vez. El tamaño de `tarifas` no se ve en el diff, por lo que el impacto real depende de ello.",
+      "suggested_fix": "Construir una vez `const porId = new Map(tarifas.map((t) => [t.id, t]))` antes del bucle y usar `porId.get(e.tarifaId)`."
+    },
+    {
+      "rule_id": "repeated-work-in-loop",
+      "category": "performance",
+      "severity": "advisory",
+      "location": {
+        "file": "src/reporte.ts",
+        "line": 38
+      },
+      "message": "La copia y el ordenamiento de todos los eventos se hacen dentro del bucle por zona, así que se repiten 4 veces con el mismo resultado. Es trabajo repetido en cada ejecución del reporte.",
+      "suggested_fix": "Mover `const ordenados = [...eventos].sort((a, b) => b.ts - a.ts)` fuera del bucle, antes de `for (const zona of ZONAS)`."
+    }
+  ]
+}

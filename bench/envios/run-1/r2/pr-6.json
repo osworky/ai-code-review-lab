@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "findings": [
+    {
+      "rule_id": "overbroad-permissions",
+      "category": "security",
+      "severity": "blocker",
+      "location": {
+        "file": ".github/workflows/ci.yml",
+        "line": 25
+      },
+      "message": "permissions: write-all da al GITHUB_TOKEN escritura en todos los ámbitos a un job que ejecuta una acción de terceros y maneja un secreto de despliegue. Es mucho más de lo necesario.",
+      "suggested_fix": "Usar permissions: contents: read (y solo los ámbitos adicionales que el despliegue requiera)."
+    },
+    {
+      "rule_id": "secret-printed-in-logs",
+      "category": "security",
+      "severity": "blocker",
+      "location": {
+        "file": ".github/workflows/ci.yml",
+        "line": 31
+      },
+      "message": "El paso imprime DEPLOY_TOKEN con echo. Aunque GitHub enmascara secretos conocidos, cualquier transformación del valor lo deja pasar y el token termina en los registros del job.",
+      "suggested_fix": "Eliminar el echo del token; imprimir solo un mensaje sin el secreto."
+    },
+    {
+      "rule_id": "hidden-price-multiplier",
+      "category": "correctness",
+      "severity": "blocker",
+      "location": {
+        "file": "src/cotizar.ts",
+        "line": 23
+      },
+      "message": "El total que ve el cliente se multiplica por 1.18 con un número mágico sin nombre, sin explicación y sin test en el diff. Cambia el precio cotizado (dinero que ve el cliente, zona de decisión humana) y no queda claro si es un impuesto o un recargo; no se ve si otras rutas (p. ej. el reporte o ingresoEstimado) lo aplican igual, por lo que los importes pueden quedar inconsistentes.",
+      "suggested_fix": "Extraer el factor a una constante con nombre y documentada (p. ej. TASA_IMPUESTO), confirmarlo con una persona responsable de tarifas y añadir un test que fije el total esperado."
+    },
+    {
+      "rule_id": "unpinned-third-party-action",
+      "category": "security",
+      "severity": "advisory",
+      "location": {
+        "file": ".github/workflows/ci.yml",
+        "line": 30
+      },
+      "message": "acme/deploy-action@v1 es una acción de terceros fijada por etiqueta mutable, no por SHA, y además recibe DEPLOY_TOKEN porque el env está definido a nivel de job (línea 27). Una etiqueta movida podría exfiltrar el secreto.",
+      "suggested_fix": "Fijar la acción a un SHA de commit completo y pasar el token solo en el paso que lo necesita (env a nivel de paso)."
+    },
+    {
+      "rule_id": "breaking-type-rename",
+      "category": "correctness",
+      "severity": "advisory",
+      "location": {
+        "file": "src/cotizar.ts",
+        "line": 18
+      },
+      "message": "El tipo exportado Cotizacion cambia el campo totalUsd por total_usd. Es un cambio de contrato público; no se ven en el diff los consumidores (reporte, API, tests) y no se actualiza documentación, por lo que podrían quedar lecturas de totalUsd en undefined. Depende de archivos que no se ven, por eso no se marca como bloqueante.",
+      "suggested_fix": "Comprobar y actualizar todos los usos de totalUsd y la documentación, o mantener el nombre anterior; si el cambio es intencional, indicarlo y cubrirlo con tests."
+    },
+    {
+      "rule_id": "logic-change-without-tests",
+      "category": "missing_tests",
+      "severity": "advisory",
+      "location": {
+        "file": "src/cotizar.ts",
+        "line": 21
+      },
+      "message": "Cambian la lógica de cotizar (límite de peso y factor de precio) y el nombre del campo, pero el único archivo de tests modificado es tests/reporte.test.ts, con un cambio solo de orden de imports. El contexto exige que un cambio de lógica traiga su test.",
+      "suggested_fix": "Añadir tests en tests/ para el límite de peso, el total con el factor aplicado y la forma de Cotizacion."
+    },
+    {
+      "rule_id": "silent-weight-limit",
+      "category": "correctness",
+      "severity": "advisory",
+      "location": {
+        "file": "src/cotizar.ts",
+        "line": 21
+      },
+      "message": "Se añade un límite de 23.5 kg como número mágico. Un peso mayor devuelve null, igual que una entrada inválida, así que el llamador no puede distinguir 'demasiado pesado' de 'dato erróneo' y el usuario podría no ver ningún motivo. No hay test ni documentación del límite en el diff.",
+      "suggested_fix": "Definir una constante PESO_MAXIMO_KG, documentar el límite en README y devolver un motivo distinguible; añadir tests en el borde (23.5 y 23.6)."
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "findings": [
+    {
+      "rule_id": "calendar-validation-removed",
+      "category": "correctness",
+      "severity": "blocker",
+      "location": {
+        "file": "src/fechas.ts",
+        "line": 8
+      },
+      "message": "Se eliminó la comprobación de que la fecha existe en el calendario. Con solo mes 1-12 y día 1-31, entradas como 2025-02-31 o 2025-04-31 se aceptan y Date.UTC las desplaza al mes siguiente (2025-03-03), de modo que parseFecha devuelve una fecha distinta de la escrita en vez de null. Esto afecta a las fechas de entrega, zona de corrección prioritaria, y contradice el contrato anterior de la función.",
+      "suggested_fix": "Restaurar la comprobación de ida y vuelta: construir la fecha con Date.UTC y verificar que getUTCFullYear, getUTCMonth y getUTCDate coinciden con anio, mes - 1 y dia; si no, devolver null."
+    },
+    {
+      "rule_id": "float-equality-on-money",
+      "category": "correctness",
+      "severity": "blocker",
+      "location": {
+        "file": "src/fechas.ts",
+        "line": 32
+      },
+      "message": "coincideTotal suma importes en decimales (precio) y los compara con === contra el total declarado. Con coma flotante, 0.1 + 0.2 !== 0.3, así que totales válidos se rechazarán (o, según el uso, se aceptarán incorrectamente). Además el resto del módulo trabaja en centavos enteros (precioCentavos, totalEnCentavos), por lo que esta función introduce una unidad inconsistente en una zona de dinero que ve el cliente. No se ve en el diff quién la llama ni qué unidad usa el cliente.",
+      "suggested_fix": "Operar en centavos enteros (precioCentavos y declarado en centavos, reutilizando totalEnCentavos) o comparar tras redondear con Math.round(x * 100)."
+    },
+    {
+      "rule_id": "overdue-delivery-masked-as-zero",
+      "category": "correctness",
+      "severity": "advisory",
+      "location": {
+        "file": "src/fechas.ts",
+        "line": 15
+      },
+      "message": "diasHasta ahora devuelve 0 para entregas ya vencidas, lo que es indistinguible de una entrega que vence hoy. Los llamadores pierden la señal de retraso y podrían mostrar o tratar como 'hoy' una entrega atrasada. Es un cambio de comportamiento de una función exportada; no se ven en el diff los llamadores.",
+      "suggested_fix": "Mantener el valor negativo y que cada llamador decida cómo mostrarlo, o exponer un indicador aparte de entrega vencida."
+    },
+    {
+      "rule_id": "missing-tests-for-changed-logic",
+      "category": "missing_tests",
+      "severity": "advisory",
+      "location": {
+        "file": "src/fechas.ts",
+        "line": 30
+      },
+      "message": "El diff cambia la lógica de parseFecha y diasHasta y añade la función exportada coincideTotal, pero no incluye ningún test en tests/. Un test de fechas inexistentes (2025-02-31), de entregas vencidas y de sumas decimales como 0.1 + 0.2 habría detectado los problemas anteriores.",
+      "suggested_fix": "Añadir tests en tests/ para parseFecha (fechas inexistentes y bisiestas), diasHasta (vencida, hoy, futura) y coincideTotal (decimales y centavos)."
+    }
+  ]
+}

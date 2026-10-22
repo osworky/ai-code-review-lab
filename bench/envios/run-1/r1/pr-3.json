@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "findings": [
+    {
+      "rule_id": "missing-allowlist",
+      "category": "security",
+      "severity": "blocker",
+      "location": {
+        "file": "src/api-eventos.ts",
+        "line": 14
+      },
+      "message": "Se elimina la lista de valores permitidos de `origen` en una ruta pública sin sesión: ahora cualquier cadena no vacía (sin límite de longitud) se acepta. El contexto del proyecto exige listas de valores permitidos en esta API; el comentario 'aceptamos cualquier canal nuevo' no justifica quitar la barrera. Los tests se cambiaron para aceptar 'fax'.",
+      "suggested_fix": "Restaurar la comprobación contra ORIGENES (y ampliar la lista cuando haya un canal nuevo), o al menos validar longitud y formato."
+    },
+    {
+      "rule_id": "nested-array-validation-bypass",
+      "category": "security",
+      "severity": "blocker",
+      "location": {
+        "file": "src/api-eventos.ts",
+        "line": 22
+      },
+      "message": "Los arreglos ya no se recorren: solo se comprueba `length <= 100`. Un payload como `{ \"a\": [{ \"__proto__\": {} }] }` o con anidamiento mayor al límite dentro de un arreglo pasa como limpio, eludiendo el rechazo de claves reservadas y el límite de profundidad de una ruta pública. Además la profundidad ya no se decrementa en arreglos.",
+      "suggested_fix": "Volver a `valor.length <= 100 && valor.every((v) => esPayloadLimpio(v, profundidad - 1))`, y añadir un test con clave reservada dentro de un arreglo."
+    },
+    {
+      "rule_id": "undocumented-api-contract-change",
+      "category": "documentation",
+      "severity": "advisory",
+      "location": {
+        "file": "src/api-eventos.ts",
+        "line": 8
+      },
+      "message": "El contrato público cambia: el código de error `origen` pasa a `origen_invalido` y la respuesta exitosa añade `estado: \"aceptado\"`. Los clientes que comparan `error === \"origen\"` se rompen. En el diff no aparece ningún cambio en docs/api.md (no se ve su contenido, así que la severidad es moderada).",
+      "suggested_fix": "Actualizar docs/api.md con el nuevo código de error y el campo `estado`, o mantener el código `origen` por compatibilidad."
+    }
+  ]
+}

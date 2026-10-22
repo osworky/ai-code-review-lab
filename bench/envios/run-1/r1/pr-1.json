@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "findings": [
+    {
+      "rule_id": "weight-limit-off-by-one",
+      "category": "correctness",
+      "severity": "blocker",
+      "location": {
+        "file": "src/cotizar.ts",
+        "line": 5
+      },
+      "message": "El filtro pasó de kg <= t.maxKg a kg < t.maxKg. Un paquete que pesa exactamente el máximo de una tarifa (por ejemplo 5 kg en una tarifa de hasta 5 kg) deja de cubrirse, y cotizar devuelve null o una tarifa de un tramo superior más cara. Cambia el precio al cliente y el docstring ('cubren el peso pedido') no justifica el cambio.",
+      "suggested_fix": "Restaurar kg <= t.maxKg, salvo que el cambio sea intencional; en ese caso documentarlo y añadir un test del caso límite."
+    },
+    {
+      "rule_id": "mixed-currency-comparison",
+      "category": "correctness",
+      "severity": "blocker",
+      "location": {
+        "file": "src/cotizar.ts",
+        "line": 15
+      },
+      "message": "masBarata ahora compara t.precio directamente en lugar de enDolares(t). Si las tarifas están en monedas distintas, se elige la opción con el número menor y no la de menor costo real, así que el cliente puede recibir un precio más caro. Es dinero que ve el cliente. Además el comentario se acortó y ya no dice que se compara en la misma moneda. No veo ./tarifas en el diff, así que depende de que haya tarifas con monedas distintas, algo que aDolares sugiere.",
+      "suggested_fix": "Volver a comparar con enDolares(t) < enDolares(mejor) y restaurar el comentario original."
+    },
+    {
+      "rule_id": "missing-test-fragile-surcharge",
+      "category": "missing_tests",
+      "severity": "advisory",
+      "location": {
+        "file": "src/cotizar.ts",
+        "line": 19
+      },
+      "message": "conRecargoFragil es una función exportada nueva con lógica de dinero (15 % con mínimo de 2 USD) y cotizar tiene un parámetro nuevo fragil, pero el diff no incluye tests: ni el mínimo de 2 USD, ni el porcentaje, ni el caso fragil=false. Tampoco se cambió README ni docs en el diff para describir el recargo.",
+      "suggested_fix": "Añadir tests en tests/ para totales bajos (aplica el mínimo de 2), altos (15 %) y fragil=false, y documentar el recargo."
+    }
+  ]
+}

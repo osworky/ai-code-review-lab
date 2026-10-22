@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "findings": [
+    {
+      "rule_id": "missing-allowlist",
+      "category": "security",
+      "severity": "blocker",
+      "location": {
+        "file": "src/api-eventos.ts",
+        "line": 14
+      },
+      "message": "La ruta pública sin sesión dejó de validar `origen` contra la lista de valores permitidos (ORIGENES): ahora acepta cualquier cadena no vacía. El contexto del proyecto exige listas de valores permitidos en esta API. El comentario 'sin tener que tocar el código' no justifica quitar la barrera.",
+      "suggested_fix": "Restaurar la comprobación `(ORIGENES as readonly string[]).includes(origen)`; para añadir canales, ampliar la lista ORIGENES."
+    },
+    {
+      "rule_id": "nested-array-not-validated",
+      "category": "security",
+      "severity": "blocker",
+      "location": {
+        "file": "src/api-eventos.ts",
+        "line": 22
+      },
+      "message": "Los arreglos ya no se recorren: solo se comprueba `length <= 100`, así que objetos con claves reservadas (`__proto__`, `constructor`, `prototype`) dentro de un arreglo pasan la validación, y la profundidad dentro de arreglos deja de limitarse. Es una regresión de la barrera de la API pública.",
+      "suggested_fix": "Restaurar la recursión `valor.every((v) => esPayloadLimpio(v, profundidad - 1))` y, si se quiere, mantener además el límite de longitud."
+    },
+    {
+      "rule_id": "missing-regression-test",
+      "category": "missing_tests",
+      "severity": "advisory",
+      "location": {
+        "file": "tests/api-eventos.test.ts",
+        "line": 21
+      },
+      "message": "Los tests cambian para aceptar cualquier origen (se elimina el que rechazaba un origen fuera de lista) y no hay ningún test de claves reservadas ni profundidad dentro de arreglos, ni del nuevo límite de 100 elementos. Por eso las regresiones no se detectan.",
+      "suggested_fix": "Mantener el test de origen fuera de lista y añadir tests de clave reservada dentro de un arreglo, de profundidad excedida en arreglos y del límite de longitud."
+    },
+    {
+      "rule_id": "api-contract-change-undocumented",
+      "category": "documentation",
+      "severity": "advisory",
+      "location": {
+        "file": "src/api-eventos.ts",
+        "line": 8
+      },
+      "message": "Cambia el contrato público: el error `origen` pasa a `origen_invalido` y la respuesta correcta añade `estado: \"aceptado\"`. El diff no actualiza docs/api.md, que según el contexto describe este contrato; los clientes que comparan el código de error se romperán.",
+      "suggested_fix": "Actualizar docs/api.md con los nuevos valores y valorar mantener `origen` por compatibilidad."
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "findings": [
+    {
+      "rule_id": "path-traversal",
+      "category": "security",
+      "severity": "blocker",
+      "location": {
+        "file": "scripts/importar_tarifas.py",
+        "line": 18
+      },
+      "message": "Se eliminó la validación que resolvía la ruta y rechazaba archivos fuera de data/. Ahora DATA_DIR / nombre se abre sin comprobar nada: un nombre como ../../secreto o una ruta absoluta lee cualquier archivo accesible. El docstring original prometía rechazar rutas que salgan de esa carpeta y el contexto marca este script como zona sensible.",
+      "suggested_fix": "Restaurar ruta = (DATA_DIR / nombre).resolve() y rechazar con ValueError si DATA_DIR no está en ruta.parents."
+    },
+    {
+      "rule_id": "missing-tests-and-docs-for-option",
+      "category": "missing_tests",
+      "severity": "advisory",
+      "location": {
+        "file": "scripts/importar_tarifas.py",
+        "line": 24
+      },
+      "message": "Se añade la opción --moneda (filtro por moneda, sin validar que sea USD o EUR) y se elimina la rama de rechazo de rutas, sin tests ni actualización de README en el diff. Si existen fuera del diff no los veo.",
+      "suggested_fix": "Añadir tests del filtro --moneda y de rechazo de rutas fuera de data/, y documentar la opción en el README."
+    },
+    {
+      "rule_id": "unused-import",
+      "category": "style",
+      "severity": "info",
+      "location": {
+        "file": "scripts/importar_tarifas.py",
+        "line": 9
+      },
+      "message": "Se importa json pero no se usa en el diff visible.",
+      "suggested_fix": "Quitar el import si no se necesita."
+    }
+  ]
+}

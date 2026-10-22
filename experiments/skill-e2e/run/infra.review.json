@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "findings": [
+    {
+      "rule_id": "pull-request-target-untrusted-code",
+      "category": "security",
+      "severity": "blocker",
+      "location": { "file": ".github/workflows/deploy.yml", "line": 12 },
+      "message": "El workflow se dispara con pull_request_target (línea 3), que corre con secretos y permisos de escritura, y hace checkout del SHA del head del PR (código controlado por quien abre el PR, incluso de forks). Después ejecuta npm ci && npm run build (línea 13) con DEPLOY_TOKEN en el entorno del job, de modo que scripts de instalación o de build del PR pueden robar el secreto.",
+      "suggested_fix": "Usar el evento pull_request (sin secretos) para construir código del PR, o desplegar solo desde push a la rama principal/workflow_dispatch. Si se necesita pull_request_target, no hacer checkout ni ejecutar código del PR."
+    },
+    {
+      "rule_id": "secret-printed-in-logs",
+      "category": "security",
+      "severity": "blocker",
+      "location": { "file": ".github/workflows/deploy.yml", "line": 14 },
+      "message": "El paso imprime DEPLOY_TOKEN con echo. Aunque GitHub enmascara secretos exactos en los registros, imprimirlo es una mala práctica y el enmascarado se evita fácilmente (p. ej. transformando el valor). Además el token está expuesto a nivel de job (línea 8), por lo que lo ven todos los pasos, incluido el código del PR.",
+      "suggested_fix": "Eliminar el echo del secreto y limitar el secreto al paso que realmente lo necesita (env a nivel de paso), nunca a nivel de job."
+    },
+    {
+      "rule_id": "unpinned-action",
+      "category": "security",
+      "severity": "advisory",
+      "location": { "file": ".github/workflows/deploy.yml", "line": 10 },
+      "message": "actions/checkout@main apunta a una rama móvil, no a una versión ni a un SHA fijo. Un cambio aguas arriba se ejecutaría en un job con acceso a secretos.",
+      "suggested_fix": "Fijar la acción a un SHA de commit completo (o al menos a una etiqueta de versión como v4)."
+    },
+    {
+      "rule_id": "missing-workflow-permissions",
+      "category": "security",
+      "severity": "advisory",
+      "location": { "file": ".github/workflows/deploy.yml", "line": 4 },
+      "message": "No se declara el bloque permissions. Con pull_request_target el GITHUB_TOKEN toma los permisos por defecto del repositorio, que pueden ser de lectura y escritura, y el código del PR corre con ellos. No puedo ver la configuración del repositorio, por eso no se marca como bloqueante.",
+      "suggested_fix": "Añadir permissions: contents: read a nivel de workflow (o job) y ampliar solo lo necesario."
+    },
+    {
+      "rule_id": "missing-job-timeout",
+      "category": "performance",
+      "severity": "info",
+      "location": { "file": ".github/workflows/deploy.yml", "line": 6 },
+      "message": "El job no define timeout-minutes; un npm ci o build colgado, o código malicioso de un PR, consumiría minutos de CI hasta el límite por defecto de 6 horas.",
+      "suggested_fix": "Añadir timeout-minutes (por ejemplo 15) al job."
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "findings": [
+    {
+      "rule_id": "weak-date-validation",
+      "category": "correctness",
+      "severity": "blocker",
+      "location": {
+        "file": "src/fechas.ts",
+        "line": 8
+      },
+      "message": "Se eliminó la comprobación de que la fecha existe en el calendario. Con solo mes 1-12 y día 1-31, fechas como 2024-02-31 o 2023-04-31 se aceptan y Date.UTC las desplaza al mes siguiente, produciendo una fecha de entrega distinta de la pedida sin error. El comentario del contrato también se rebajó de 'existe en el calendario' a 'válida'.",
+      "suggested_fix": "Restaurar la verificación de ida y vuelta: construir la fecha y comprobar que getUTCFullYear, getUTCMonth y getUTCDate coinciden con año, mes y día; devolver null si no."
+    },
+    {
+      "rule_id": "float-equality-on-money",
+      "category": "correctness",
+      "severity": "advisory",
+      "location": {
+        "file": "src/fechas.ts",
+        "line": 32
+      },
+      "message": "coincideTotal compara con === la suma de precios en números decimales (campo precio, no centavos) con el total declarado. Sumas como 0.1 + 0.2 no son iguales a 0.3 en coma flotante, así que totales correctos pueden rechazarse. Además el resto del módulo trabaja en centavos enteros, por lo que esta función es inconsistente con el manejo de dinero. No se ve en el diff quién la usa.",
+      "suggested_fix": "Operar en centavos enteros (precioCentavos y total declarado en centavos) o redondear ambos lados a centavos antes de comparar."
+    },
+    {
+      "rule_id": "silent-clamp-overdue-days",
+      "category": "correctness",
+      "severity": "advisory",
+      "location": {
+        "file": "src/fechas.ts",
+        "line": 15
+      },
+      "message": "diasHasta ahora devuelve 0 para entregas vencidas, lo que hace indistinguible una entrega que vence hoy de una ya atrasada y oculta retrasos a quien llame. Es un cambio de comportamiento; no se ve en el diff que los llamadores lo esperen.",
+      "suggested_fix": "Confirmar que los llamadores no necesitan el valor negativo; si lo necesitan, mantener el cálculo original y limitar a 0 solo en la capa de presentación."
+    },
+    {
+      "rule_id": "missing-tests-for-changed-logic",
+      "category": "missing_tests",
+      "severity": "advisory",
+      "location": {
+        "file": "src/fechas.ts",
+        "line": 30
+      },
+      "message": "El diff cambia la validación de parseFecha, el comportamiento de diasHasta y añade coincideTotal, pero no incluye ningún cambio en tests/. Un caso como 2024-02-31 habría detectado la regresión de validación.",
+      "suggested_fix": "Añadir tests para parseFecha (fechas inexistentes), diasHasta (entrega vencida) y coincideTotal (sumas decimales)."
+    }
+  ]
+}

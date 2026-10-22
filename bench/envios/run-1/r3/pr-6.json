@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "findings": [
+    {
+      "rule_id": "overly-broad-permissions",
+      "category": "security",
+      "severity": "blocker",
+      "location": {
+        "file": ".github/workflows/ci.yml",
+        "line": 25
+      },
+      "message": "permissions: write-all concede al GITHUB_TOKEN escritura sobre todos los ámbitos en un job que ejecuta una acción de terceros con acceso a un secreto de despliegue. Si la acción o el flujo se compromete, el alcance del daño es todo el repositorio. Los permisos son zona de decisión humana según el contexto del proyecto.",
+      "suggested_fix": "Usar el mínimo necesario, por ejemplo permissions: { contents: read }, y añadir solo los ámbitos que el despliegue requiera."
+    },
+    {
+      "rule_id": "secret-printed-in-logs",
+      "category": "security",
+      "severity": "blocker",
+      "location": {
+        "file": ".github/workflows/ci.yml",
+        "line": 31
+      },
+      "message": "El paso imprime DEPLOY_TOKEN con echo. Aunque GitHub enmascara los secretos exactos, una transformación del valor (base64, espacios, partes) lo deja visible en los registros, y el patrón normaliza imprimir credenciales. Además, el secreto está definido a nivel de job (línea 27), por lo que lo ven todos los pasos, incluida la acción de terceros.",
+      "suggested_fix": "Eliminar el echo (o imprimir un mensaje sin el valor) y pasar el token solo como env del paso que lo necesita."
+    },
+    {
+      "rule_id": "unexplained-price-multiplier",
+      "category": "correctness",
+      "severity": "blocker",
+      "location": {
+        "file": "src/cotizar.ts",
+        "line": 23
+      },
+      "message": "El total que ve el cliente ahora se multiplica por 1.18 (un recargo o impuesto del 18%) como número mágico, sin constante con nombre, sin explicación y sin test. Es dinero que ve el cliente, zona donde la decisión es humana. Además, masBarata compara con enDolares sin el recargo, así que el total ya no es coherente con la comparación. No se ve en el diff si hay un test o documento que respalde este cambio.",
+      "suggested_fix": "Confirmar con una persona que el recargo es intencional, extraerlo a una constante con nombre y documentar su origen, aplicarlo de forma consistente y añadir un test del precio final."
+    },
+    {
+      "rule_id": "unpinned-third-party-action",
+      "category": "security",
+      "severity": "advisory",
+      "location": {
+        "file": ".github/workflows/ci.yml",
+        "line": 30
+      },
+      "message": "acme/deploy-action@v1 es una acción de terceros fijada por una etiqueta mutable, no por SHA de commit. Quien controle la etiqueta puede cambiar el código que se ejecuta con DEPLOY_TOKEN y permisos de escritura.",
+      "suggested_fix": "Fijar la acción al SHA completo de un commit revisado (acme/deploy-action@<sha>) y mantenerla actualizada con Dependabot."
+    },
+    {
+      "rule_id": "breaking-rename-public-field",
+      "category": "correctness",
+      "severity": "advisory",
+      "location": {
+        "file": "src/cotizar.ts",
+        "line": 18
+      },
+      "message": "El tipo exportado Cotizacion renombra totalUsd a total_usd (y rompe la convención camelCase del resto del código). Cualquier consumidor que lea totalUsd dejará de compilar o recibirá undefined. No veo en el diff otros archivos que se actualicen, ni tests ni documentación; si hay usos en archivos que no se ven, quedarían rotos.",
+      "suggested_fix": "Mantener totalUsd, o actualizar todos los consumidores, los tests y la documentación en el mismo cambio."
+    },
+    {
+      "rule_id": "undocumented-weight-limit",
+      "category": "missing_tests",
+      "severity": "advisory",
+      "location": {
+        "file": "src/cotizar.ts",
+        "line": 21
+      },
+      "message": "Se añade un límite de peso (kg > 23.5 devuelve null) que cambia el comportamiento de cotizar: pedidos pesados que antes tenían precio ahora no tienen cotización. El diff no incluye ningún test del nuevo límite (solo cambia un orden de imports en tests/reporte.test.ts) ni documentación en README.md, y el valor 23.5 es un número mágico.",
+      "suggested_fix": "Extraer el límite a una constante con nombre, documentarlo en README.md y añadir tests en tests/ para el borde (23.5 y 23.6 kg)."
+    }
+  ]
+}

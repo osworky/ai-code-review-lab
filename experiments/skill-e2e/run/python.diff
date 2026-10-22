@@ -1,0 +1,29 @@
+diff --git a/scripts/check_commit_msg.py b/scripts/check_commit_msg.py
+index 3e355854..e901328e 100644
+--- a/scripts/check_commit_msg.py
++++ b/scripts/check_commit_msg.py
+@@ -33,7 +33,7 @@ def check_subject(subject: str) -> list[str]:
+   33|              f'"{subject}" does not match "type(scope)!: description" with type in {", ".join(TYPES)}',
+   34|          ]
+   35|      errors = []
+     | -    if len(subject) > MAX_SUBJECT:
+   36| +    if len(subject) > MAX_SUBJECT and not match.group(2):
+   37|          errors.append(f"subject is {len(subject)} characters; the limit is {MAX_SUBJECT}")
+   38|      if match.group(4).rstrip().endswith("."):
+   39|          errors.append("subject must not end with a period")
+@@ -84,3 +84,15 @@ def main(argv: list[str]) -> int:
+   84|  
+   85|  if __name__ == "__main__":
+   86|      sys.exit(main(sys.argv))
+   87| +
+   88| +
+   89| +def check_file(path: str) -> int:
+   90| +    """Validate the commit message stored in `path` and run the project's formatter on it."""
+   91| +    import os
+   92| +
+   93| +    text = open(path).read()
+   94| +    os.system("prettier --write " + path)
+   95| +    errors = check_message(text)
+   96| +    for error in errors:
+   97| +        print(error)
+   98| +    return 1 if errors else 0

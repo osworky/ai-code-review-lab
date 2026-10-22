@@ -1,0 +1,386 @@
+{
+  "generated": "2026-10-22",
+  "note": "Only aggregates. One reviewer model, one labeller, small samples: pilot figures, not a calibration.",
+  "precision": {
+    "scope": "five experiments over real code",
+    "n": 63,
+    "A": 25,
+    "M": 25,
+    "R": 13,
+    "strict": {
+      "k": 25,
+      "n": 63,
+      "value": 0.3968253968253968,
+      "low": 0.28531728147309304,
+      "high": 0.5201930593924757
+    },
+    "broad": {
+      "k": 50,
+      "n": 63,
+      "value": 0.7936507936507936,
+      "low": 0.6782995165388411,
+      "high": 0.8752479748437708
+    },
+    "noise": {
+      "k": 13,
+      "n": 63,
+      "value": 0.20634920634920634,
+      "low": 0.1247520251562291,
+      "high": 0.32170048346115887
+    },
+    "byExperiment": [
+      {
+        "id": "legacy-contact-form",
+        "es": "Auditoría legacy de un formulario",
+        "en": "Legacy audit of a form",
+        "n": 19,
+        "A": 11,
+        "M": 4,
+        "R": 4,
+        "strict": {
+          "k": 11,
+          "n": 19,
+          "value": 0.5789473684210527,
+          "low": 0.36275551465160105,
+          "high": 0.7685837960796962
+        },
+        "broad": {
+          "k": 15,
+          "n": 19,
+          "value": 0.7894736842105263,
+          "low": 0.5666528575973392,
+          "high": 0.9149246150840843
+        },
+        "noise": {
+          "k": 4,
+          "n": 19,
+          "value": 0.21052631578947367,
+          "low": 0.08507538491591576,
+          "high": 0.43334714240266087
+        }
+      },
+      {
+        "id": "reviewers",
+        "es": "Revisores especializados y router",
+        "en": "Specialised reviewers and router",
+        "n": 15,
+        "A": 7,
+        "M": 5,
+        "R": 3,
+        "strict": {
+          "k": 7,
+          "n": 15,
+          "value": 0.4666666666666667,
+          "low": 0.24809225259746442,
+          "high": 0.6988336984894921
+        },
+        "broad": {
+          "k": 12,
+          "n": 15,
+          "value": 0.8,
+          "low": 0.5481406466534955,
+          "high": 0.9295257935638959
+        },
+        "noise": {
+          "k": 3,
+          "n": 15,
+          "value": 0.2,
+          "low": 0.07047420643610414,
+          "high": 0.4518593533465045
+        }
+      },
+      {
+        "id": "review-procedure-self-review-round3",
+        "es": "Autorrevisión del procedimiento (ronda 3)",
+        "en": "Self-review of the procedure (round 3)",
+        "n": 6,
+        "A": 1,
+        "M": 5,
+        "R": 0,
+        "strict": {
+          "k": 1,
+          "n": 6,
+          "value": 0.16666666666666666,
+          "low": 0.03005258587173032,
+          "high": 0.563509436563646
+        },
+        "broad": {
+          "k": 6,
+          "n": 6,
+          "value": 1,
+          "low": 0.6096569663469354,
+          "high": 0.9999999999999999
+        },
+        "noise": {
+          "k": 0,
+          "n": 6,
+          "value": 0,
+          "low": 0,
+          "high": 0.3903430336530645
+        }
+      },
+      {
+        "id": "differential-review",
+        "es": "Revisión diferencial",
+        "en": "Differential review",
+        "n": 12,
+        "A": 4,
+        "M": 5,
+        "R": 3,
+        "strict": {
+          "k": 4,
+          "n": 12,
+          "value": 0.3333333333333333,
+          "low": 0.13811783989736134,
+          "high": 0.609382412602386
+        },
+        "broad": {
+          "k": 9,
+          "n": 12,
+          "value": 0.75,
+          "low": 0.46768966087934005,
+          "high": 0.9110599603710386
+        },
+        "noise": {
+          "k": 3,
+          "n": 12,
+          "value": 0.25,
+          "low": 0.08894003962896138,
+          "high": 0.53231033912066
+        }
+      },
+      {
+        "id": "recall-pilot",
+        "es": "Exceso del piloto de recall",
+        "en": "Excess findings of the recall pilot",
+        "n": 11,
+        "A": 2,
+        "M": 6,
+        "R": 3,
+        "strict": {
+          "k": 2,
+          "n": 11,
+          "value": 0.18181818181818182,
+          "low": 0.05136660067100063,
+          "high": 0.4769861375782448
+        },
+        "broad": {
+          "k": 8,
+          "n": 11,
+          "value": 0.7272727272727273,
+          "low": 0.4343497069897537,
+          "high": 0.9025411942607853
+        },
+        "noise": {
+          "k": 3,
+          "n": 11,
+          "value": 0.2727272727272727,
+          "low": 0.09745880573921467,
+          "high": 0.5656502930102463
+        }
+      }
+    ]
+  },
+  "recall": {
+    "cases": [
+      {
+        "id": "c1",
+        "es": "Validación de una API pública (PR)",
+        "en": "Public API validation (PR)",
+        "elements": 5,
+        "runs": [
+          0,
+          0,
+          0
+        ],
+        "control": 0,
+        "union": 0,
+        "consensus": 0,
+        "findingOverlap": 0.42
+      },
+      {
+        "id": "c2",
+        "es": "Formulario de contacto (auditoría legacy)",
+        "en": "Contact form (legacy audit)",
+        "elements": 11,
+        "runs": [
+          5,
+          4,
+          3
+        ],
+        "control": 3,
+        "union": 6,
+        "consensus": 4,
+        "findingOverlap": 0.59
+      },
+      {
+        "id": "c3",
+        "es": "Lógica de cotización y datos",
+        "en": "Quote logic and data",
+        "elements": 12,
+        "runs": [
+          2,
+          4,
+          1
+        ],
+        "control": 1,
+        "union": 4,
+        "consensus": 2,
+        "findingOverlap": 0.26
+      }
+    ]
+  },
+  "bench": {
+    "v1": {
+      "status": "run",
+      "defects": 18,
+      "decoys": 6,
+      "runs": [
+        {
+          "run": "r1",
+          "recall": {
+            "hits": 18,
+            "of": 18
+          },
+          "real": {
+            "hits": 9,
+            "of": 9
+          },
+          "invented": {
+            "hits": 9,
+            "of": 9
+          },
+          "commission": {
+            "hits": 14,
+            "of": 14
+          },
+          "omission": {
+            "hits": 4,
+            "of": 4
+          },
+          "decoyAlarms": {
+            "alarms": 0,
+            "of": 6
+          },
+          "excess": 1,
+          "missed": []
+        },
+        {
+          "run": "r2",
+          "recall": {
+            "hits": 18,
+            "of": 18
+          },
+          "real": {
+            "hits": 9,
+            "of": 9
+          },
+          "invented": {
+            "hits": 9,
+            "of": 9
+          },
+          "commission": {
+            "hits": 14,
+            "of": 14
+          },
+          "omission": {
+            "hits": 4,
+            "of": 4
+          },
+          "decoyAlarms": {
+            "alarms": 0,
+            "of": 6
+          },
+          "excess": 2,
+          "missed": []
+        },
+        {
+          "run": "r3",
+          "recall": {
+            "hits": 17,
+            "of": 18
+          },
+          "real": {
+            "hits": 9,
+            "of": 9
+          },
+          "invented": {
+            "hits": 8,
+            "of": 9
+          },
+          "commission": {
+            "hits": 14,
+            "of": 14
+          },
+          "omission": {
+            "hits": 3,
+            "of": 4
+          },
+          "decoyAlarms": {
+            "alarms": 0,
+            "of": 6
+          },
+          "excess": 2,
+          "missed": [
+            "D06"
+          ]
+        }
+      ],
+      "control": {
+        "run": "ctl",
+        "recall": {
+          "hits": 18,
+          "of": 18
+        },
+        "real": {
+          "hits": 9,
+          "of": 9
+        },
+        "invented": {
+          "hits": 9,
+          "of": 9
+        },
+        "commission": {
+          "hits": 14,
+          "of": 14
+        },
+        "omission": {
+          "hits": 4,
+          "of": 4
+        },
+        "decoyAlarms": {
+          "alarms": 0,
+          "of": 6
+        },
+        "excess": 3,
+        "missed": []
+      },
+      "excessLabels": {
+        "A": 1,
+        "M": 2,
+        "R": 0
+      }
+    },
+    "v2": {
+      "status": "built",
+      "defects": 12,
+      "prs": 4,
+      "decoys": 8,
+      "note": "results pending"
+    }
+  },
+  "triage": {
+    "alarms": 19,
+    "modelHumanRequire": 19,
+    "labelledTrue": 19,
+    "agreement": {
+      "k": 0,
+      "n": 19
+    }
+  },
+  "policy": {
+    "minRows": 30,
+    "categories": 6,
+    "categoriesWithEnoughData": 0
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "ai-code-review-skill",
+  "private": true,
+  "type": "module",
+  "description": "Measured, consultative AI code review: specialized reviewers, a deterministic validator and a ledger of what people decide about each finding.",
+  "scripts": {
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "vitest": "^3.2.7"
+  }
+}

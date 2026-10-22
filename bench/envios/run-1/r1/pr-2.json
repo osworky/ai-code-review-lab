@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "findings": [
+    {
+      "rule_id": "invalid-calendar-date-accepted",
+      "category": "correctness",
+      "severity": "blocker",
+      "location": {
+        "file": "src/fechas.ts",
+        "line": 8
+      },
+      "message": "Se eliminó la comprobación de que la fecha existe en el calendario. Con solo mes 1-12 y día 1-31, entradas como 2025-02-31 o 2025-04-31 ya no devuelven null: Date.UTC las desborda a otra fecha (3 de marzo, 1 de mayo) y se calcula una fecha de entrega equivocada sin ningún error. El contrato anterior (fecha que existe en el calendario) se rompe, y las fechas de entrega son zona sensible.",
+      "suggested_fix": "Restaurar la verificación de ida y vuelta: construir la fecha con Date.UTC y comprobar que getUTCFullYear, getUTCMonth y getUTCDate coinciden con año, mes-1 y día; si no, devolver null."
+    },
+    {
+      "rule_id": "overdue-delivery-clamped-silently",
+      "category": "missing_tests",
+      "severity": "advisory",
+      "location": {
+        "file": "src/fechas.ts",
+        "line": 15
+      },
+      "message": "El diff cambia la lógica de parseFecha y diasHasta (ahora una entrega vencida da 0 en lugar de un valor negativo) y añade coincideTotal, pero no incluye ningún test en tests/. El recorte a 0 además oculta a quien llame que la entrega ya venció, y no se ve en el diff si algún llamador dependía de los negativos.",
+      "suggested_fix": "Añadir tests para fechas inexistentes (2025-02-31), entrega vencida, y coincideTotal con decimales; confirmar que los llamadores de diasHasta no necesitan distinguir entregas vencidas."
+    },
+    {
+      "rule_id": "float-money-equality",
+      "category": "correctness",
+      "severity": "advisory",
+      "location": {
+        "file": "src/fechas.ts",
+        "line": 32
+      },
+      "message": "coincideTotal suma precios con campo 'precio' (probablemente decimales) y los compara con === contra un total declarado por el cliente. La aritmética de punto flotante hace que, por ejemplo, 0.1 + 0.2 !== 0.3, dando falsos desacuerdos con dinero. Además el resto del archivo trabaja en centavos enteros (precioCentavos), por lo que el contrato es inconsistente. No se ve en el diff cómo se usa ni si 'declarado' viene validado.",
+      "suggested_fix": "Operar en centavos enteros (precioCentavos y declarado en centavos) o redondear ambos lados a centavos antes de comparar; validar que declarado sea un número finito."
+    }
+  ]
+}

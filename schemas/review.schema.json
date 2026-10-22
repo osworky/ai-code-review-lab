@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Reviewer output (schema_version 1)",
+  "description": "Documentation of the contract enforced by qa/review/validate-review.mjs. The script is the source of truth.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "findings"],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "findings": {
+      "type": "array",
+      "description": "Empty when the review finds nothing.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["rule_id", "category", "severity", "location", "message", "suggested_fix"],
+        "properties": {
+          "rule_id": { "type": "string", "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$" },
+          "category": { "enum": ["correctness", "security", "performance", "missing_tests", "style", "documentation"] },
+          "severity": { "enum": ["blocker", "advisory", "info"] },
+          "location": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["file", "line"],
+            "properties": {
+              "file": { "type": "string", "minLength": 1 },
+              "line": { "type": "integer", "minimum": 1 }
+            }
+          },
+          "message": { "type": "string", "minLength": 1 },
+          "suggested_fix": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

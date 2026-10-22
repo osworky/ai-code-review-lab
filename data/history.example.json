@@ -1,0 +1,85 @@
+[
+  {
+    "id": "ex-1",
+    "rule_id": "missing-authorization",
+    "category": "security",
+    "ai_decision": "block",
+    "human_decision": "block",
+    "labeler": "example",
+    "date": "2026-01-01",
+    "note": "SYNTHETIC EXAMPLE, not real data",
+    "source": "audit_sample"
+  },
+  {
+    "id": "ex-2",
+    "rule_id": "missing-authorization",
+    "category": "security",
+    "ai_decision": "block",
+    "human_decision": "block",
+    "labeler": "example",
+    "date": "2026-01-02",
+    "source": "audit_sample"
+  },
+  {
+    "id": "ex-3",
+    "rule_id": "missing-authorization",
+    "category": "security",
+    "ai_decision": "pass",
+    "human_decision": "pass",
+    "labeler": "example",
+    "date": "2026-01-03",
+    "source": "audit_sample"
+  },
+  {
+    "id": "ex-4",
+    "rule_id": "missing-tests",
+    "category": "missing_tests",
+    "ai_decision": "block",
+    "human_decision": "warn",
+    "labeler": "example",
+    "date": "2026-01-04",
+    "note": "false positive: the AI blocked, the human only warned",
+    "source": "override"
+  },
+  {
+    "id": "ex-5",
+    "rule_id": "missing-tests",
+    "category": "missing_tests",
+    "ai_decision": "block",
+    "human_decision": "warn",
+    "labeler": "example",
+    "date": "2026-01-05",
+    "source": "override"
+  },
+  {
+    "id": "ex-6",
+    "rule_id": "missing-tests",
+    "category": "missing_tests",
+    "ai_decision": "warn",
+    "human_decision": "warn",
+    "labeler": "example",
+    "date": "2026-01-06",
+    "source": "audit_sample"
+  },
+  {
+    "id": "ex-7",
+    "rule_id": "inconsistent-naming",
+    "category": "style",
+    "ai_decision": "pass",
+    "human_decision": "block",
+    "labeler": "example",
+    "date": "2026-01-07",
+    "note": "false negative: the AI let it pass, the human would have blocked",
+    "source": "override"
+  },
+  {
+    "id": "ex-8",
+    "rule_id": "inconsistent-naming",
+    "category": "style",
+    "ai_decision": "warn",
+    "human_decision": "warn",
+    "labeler": "example",
+    "date": "2026-01-08",
+    "source": "audit_sample"
+  }
+]

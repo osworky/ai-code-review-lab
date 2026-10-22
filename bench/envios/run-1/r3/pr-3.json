@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "findings": [
+    {
+      "rule_id": "missing-allowlist",
+      "category": "security",
+      "severity": "blocker",
+      "location": {
+        "file": "src/api-eventos.ts",
+        "line": 14
+      },
+      "message": "Se elimina la lista de valores permitidos de `origen` en una ruta pública sin sesión: ahora cualquier cadena no vacía (sin límite de longitud ni formato) se acepta. El contexto del proyecto exige listas de valores permitidos en esta API. El comentario 'Aceptamos cualquier canal nuevo' no justifica quitar la barrera; ORIGENES queda sin uso en la validación.",
+      "suggested_fix": "Restaurar la comprobación contra ORIGENES (o una lista configurable) y rechazar cualquier origen fuera de ella."
+    },
+    {
+      "rule_id": "validation-bypass-in-arrays",
+      "category": "security",
+      "severity": "blocker",
+      "location": {
+        "file": "src/api-eventos.ts",
+        "line": 22
+      },
+      "message": "Los arreglos ya no se recorren: solo se comprueba su longitud (<= 100). Un payload como {\"a\":[{\"__proto__\":{}}]} pasa sin que se detecten claves reservadas, y tampoco se aplica el límite de profundidad dentro de arreglos. Se rompe la barrera de claves reservadas y profundidad de la API pública.",
+      "suggested_fix": "Mantener la recursión: `valor.length <= 100 && valor.every((v) => esPayloadLimpio(v, profundidad - 1))`."
+    },
+    {
+      "rule_id": "public-contract-change-undocumented",
+      "category": "documentation",
+      "severity": "advisory",
+      "location": {
+        "file": "src/api-eventos.ts",
+        "line": 8
+      },
+      "message": "Cambia el contrato público de la API: el código de error `origen` pasa a `origen_invalido` y las respuestas correctas ganan el campo `estado`. Los clientes que comparan `error === \"origen\"` se rompen. No veo cambios en docs/api.md dentro del diff (no puedo confirmar si ya se actualizó).",
+      "suggested_fix": "Actualizar docs/api.md con el nuevo código de error y el campo `estado`, o mantener el nombre `origen` por compatibilidad."
+    },
+    {
+      "rule_id": "missing-array-payload-tests",
+      "category": "missing_tests",
+      "severity": "advisory",
+      "location": {
+        "file": "tests/api-eventos.test.ts",
+        "line": 11
+      },
+      "message": "El cambio de lógica en la validación de arreglos del payload (límite de 100 elementos, sin recursión) no trae test; y el test nuevo consagra como correcto que cualquier origen como 'fax' se acepte, lo que cubre el defecto en vez de detectarlo.",
+      "suggested_fix": "Añadir tests de payload con arreglos: clave reservada anidada en un arreglo, exceso de profundidad y más de 100 elementos; y volver a probar que un origen desconocido se rechaza."
+    }
+  ]
+}

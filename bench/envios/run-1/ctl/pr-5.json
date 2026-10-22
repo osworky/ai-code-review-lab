@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "findings": [
+    {
+      "rule_id": "path-traversal",
+      "category": "security",
+      "severity": "blocker",
+      "location": {
+        "file": "scripts/importar_tarifas.py",
+        "line": 18
+      },
+      "message": "Se eliminó la comprobación que rechazaba rutas fuera de data/. Ahora DATA_DIR / nombre se abre sin resolver ni validar, así que un nombre como ../../etc/passwd o una ruta absoluta (que reemplaza DATA_DIR en pathlib) permite leer archivos arbitrarios. El docstring sigue diciendo que el CSV está en data/, pero ya no se garantiza.",
+      "suggested_fix": "Restaurar ruta = (DATA_DIR / nombre).resolve() y rechazar con ValueError si DATA_DIR no está en ruta.parents."
+    },
+    {
+      "rule_id": "unused-import",
+      "category": "style",
+      "severity": "info",
+      "location": {
+        "file": "scripts/importar_tarifas.py",
+        "line": 9
+      },
+      "message": "Se importa json pero no se usa en el diff visible (código muerto).",
+      "suggested_fix": "Eliminar el import si no se necesita."
+    },
+    {
+      "rule_id": "missing-tests-new-option",
+      "category": "missing_tests",
+      "severity": "advisory",
+      "location": {
+        "file": "scripts/importar_tarifas.py",
+        "line": 24
+      },
+      "message": "Se añade la opción --moneda con filtrado y nuevas ramas de argumentos, y se cambia la validación de la ruta, sin ningún test en el diff.",
+      "suggested_fix": "Añadir tests en tests/ para --moneda, el uso incorrecto y el rechazo de rutas fuera de data/."
+    },
+    {
+      "rule_id": "undocumented-cli-option",
+      "category": "documentation",
+      "severity": "info",
+      "location": {
+        "file": "scripts/importar_tarifas.py",
+        "line": 29
+      },
+      "message": "La nueva opción --moneda cambia el uso del script, pero el diff no actualiza el README.md, que describe su uso.",
+      "suggested_fix": "Documentar --moneda en el README.md."
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "large_changed_lines": 200,
+  "max_diff_chars": 120000,
+  "chars_per_token": 4,
+  "extensions": {
+    "docs": [".md", ".mdx", ".txt", ".rst"],
+    "code": [".py", ".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".css", ".sql"],
+    "infra": [".yml", ".yaml", ".tf", ".toml", ".dockerfile"]
+  },
+  "model_variables": {
+    "docs": "REVIEW_MODEL_DOCS",
+    "small": "REVIEW_MODEL_SMALL",
+    "large": "REVIEW_MODEL_LARGE"
+  }
+}

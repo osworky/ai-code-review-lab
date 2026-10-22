@@ -1,0 +1,38 @@
+name: Review check
+
+# Validates the AI review that comes with a pull request (.ai-review/reviews/*.json) against the diff of the PR and
+# applies the rollout phase (.ai-review/config.json, "advisory" by default: nothing blocks). The model is NOT called
+# here: the review is produced locally with the ai-code-review skill and committed with the PR.
+#
+# Copy the skill folder into the repository (for example .claude/skills/ai-code-review) and set SKILL_DIR below.
+# Pin the actions to a full commit SHA before relying on this (the lab's own Semgrep run flags tags as mutable).
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: review-check-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  SKILL_DIR: .claude/skills/ai-code-review
+
+jobs:
+  review-check:
+    name: Review check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate the attached review
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: node "$SKILL_DIR/scripts/cli.mjs" check --base "origin/$BASE_REF"

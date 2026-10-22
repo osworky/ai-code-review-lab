@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "findings": [
+    {
+      "rule_id": "excessive-workflow-permissions",
+      "category": "security",
+      "severity": "blocker",
+      "location": {
+        "file": ".github/workflows/ci.yml",
+        "line": 25
+      },
+      "message": "El job deploy usa permissions: write-all, que da al GITHUB_TOKEN escritura sobre todo el repositorio, y ejecuta una accion de terceros. Los permisos de workflows son una zona de decision humana.",
+      "suggested_fix": "Declarar solo los permisos necesarios, por ejemplo permissions: { contents: read }, y ampliar unicamente lo imprescindible."
+    },
+    {
+      "rule_id": "secret-printed-in-logs",
+      "category": "security",
+      "severity": "blocker",
+      "location": {
+        "file": ".github/workflows/ci.yml",
+        "line": 31
+      },
+      "message": "El paso hace echo de DEPLOY_TOKEN. Aunque GitHub enmascara secretos, imprimirlo permite filtrarlo (por ejemplo transformado) y es una mala practica. Ademas el token esta en el env de todo el job, visible para la accion de terceros.",
+      "suggested_fix": "Eliminar el echo del secreto y pasar DEPLOY_TOKEN solo al paso que lo necesita, no a todo el job."
+    },
+    {
+      "rule_id": "unpinned-third-party-action",
+      "category": "security",
+      "severity": "advisory",
+      "location": {
+        "file": ".github/workflows/ci.yml",
+        "line": 30
+      },
+      "message": "acme/deploy-action@v1 es una accion de terceros referenciada por etiqueta movil y se ejecuta con secretos y write-all; si la etiqueta cambia, se ejecuta codigo no revisado.",
+      "suggested_fix": "Fijar la accion al SHA completo de un commit revisado."
+    },
+    {
+      "rule_id": "unexplained-price-markup",
+      "category": "correctness",
+      "severity": "blocker",
+      "location": {
+        "file": "src/cotizar.ts",
+        "line": 23
+      },
+      "message": "El total se multiplica por 1.18 sin explicacion: cambia el dinero que ve el cliente, con un numero magico. No se ve en el diff si masBarata/enDolares ya incluyen impuestos (doble cobro) ni hay test que fije el nuevo valor.",
+      "suggested_fix": "Confirmar con una persona la regla de precio, extraer 1.18 a una constante nombrada y documentada, y anadir tests del total."
+    },
+    {
+      "rule_id": "magic-weight-limit",
+      "category": "correctness",
+      "severity": "advisory",
+      "location": {
+        "file": "src/cotizar.ts",
+        "line": 21
+      },
+      "message": "Se rechaza kg > 23.5 con un limite magico: pesos mayores pasan de cotizarse a devolver null sin distinguir el motivo. Cambia el comportamiento de la cotizacion sin documentacion ni test visibles en el diff.",
+      "suggested_fix": "Definir una constante nombrada para el limite, documentarlo y cubrir el borde (23.5 y 23.6) en tests."
+    },
+    {
+      "rule_id": "breaking-field-rename",
+      "category": "correctness",
+      "severity": "advisory",
+      "location": {
+        "file": "src/cotizar.ts",
+        "line": 18
+      },
+      "message": "Cotizacion.totalUsd pasa a total_usd, un cambio incompatible del tipo exportado y mezcla camelCase con snake_case (tarifa, tarifaId). Los consumidores no aparecen en el diff, asi que podrian romperse.",
+      "suggested_fix": "Mantener totalUsd salvo que el contrato lo exija, o actualizar y verificar todos los consumidores y la documentacion."
+    },
+    {
+      "rule_id": "logic-change-without-tests",
+      "category": "missing_tests",
+      "severity": "advisory",
+      "location": {
+        "file": "src/cotizar.ts",
+        "line": 21
+      },
+      "message": "Cambian el limite de peso, el recargo de precio y el nombre del campo, pero el unico cambio en tests es el orden de un import en tests/reporte.test.ts.",
+      "suggested_fix": "Anadir tests en tests/ para cotizar: peso limite, peso excedido y total con el recargo."
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "findings": [
+    {
+      "rule_id": "missing-allowlist",
+      "category": "security",
+      "severity": "blocker",
+      "location": {
+        "file": "src/api-eventos.ts",
+        "line": 14
+      },
+      "message": "Se elimina la lista de valores permitidos (ORIGENES) y ahora cualquier cadena no vacía es un origen válido. La ruta es pública y sin sesión, y el proyecto exige listas de valores permitidos; cualquiera puede inyectar eventos con orígenes arbitrarios (también cadenas enormes) que luego llegan al reporte.",
+      "suggested_fix": "Restaurar la comprobación contra ORIGENES y añadir los canales nuevos a esa lista explícitamente."
+    },
+    {
+      "rule_id": "array-depth-bypass",
+      "category": "security",
+      "severity": "blocker",
+      "location": {
+        "file": "src/api-eventos.ts",
+        "line": 22
+      },
+      "message": "Los arreglos ya no se recorren: basta con meter un objeto con claves reservadas (__proto__, constructor, prototype) o con profundidad excesiva dentro de un arreglo de hasta 100 elementos para saltarse el rechazo de claves reservadas y el límite de profundidad. Además se cambia el comentario que documentaba que los arreglos cuentan.",
+      "suggested_fix": "Mantener valor.every((v) => esPayloadLimpio(v, profundidad - 1)) y, si se quiere, añadir además el límite de longitud."
+    },
+    {
+      "rule_id": "undocumented-api-field",
+      "category": "documentation",
+      "severity": "advisory",
+      "location": {
+        "file": "src/api-eventos.ts",
+        "line": 7
+      },
+      "message": "Se añade el campo público 'estado: \"aceptado\"' a la respuesta correcta sin que el diff toque docs/api.md, que describe el contrato de la API.",
+      "suggested_fix": "Documentar el campo estado en docs/api.md."
+    },
+    {
+      "rule_id": "breaking-error-code",
+      "category": "correctness",
+      "severity": "advisory",
+      "location": {
+        "file": "src/api-eventos.ts",
+        "line": 8
+      },
+      "message": "El código de error público 'origen' pasa a 'origen_invalido': los clientes que comparan contra el valor anterior dejan de reconocer el error. No veo en el diff un cambio en docs/api.md, así que no puedo confirmar que el contrato se actualice.",
+      "suggested_fix": "Conservar 'origen' o versionar el cambio y reflejarlo en docs/api.md."
+    },
+    {
+      "rule_id": "missing-array-tests",
+      "category": "missing_tests",
+      "severity": "advisory",
+      "location": {
+        "file": "tests/api-eventos.test.ts",
+        "line": 6
+      },
+      "message": "El cambio modifica el tratamiento de arreglos en el payload (límite de 100 elementos, sin recorrido) pero el diff no añade ningún test de arreglos, ni de claves reservadas o profundidad dentro de ellos, ni del límite de longitud. Los tests nuevos además consagran el origen abierto ('fax' aceptado).",
+      "suggested_fix": "Añadir tests de arreglos con claves reservadas anidadas, profundidad excesiva y más de 100 elementos."
+    }
+  ]
+}

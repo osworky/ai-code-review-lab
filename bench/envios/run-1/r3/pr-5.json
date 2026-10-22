@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "findings": [
+    {
+      "rule_id": "path-traversal",
+      "category": "security",
+      "severity": "blocker",
+      "location": {
+        "file": "scripts/importar_tarifas.py",
+        "line": 18
+      },
+      "message": "Se elimina la validación que resolvía la ruta y rechazaba archivos fuera de data/. Ahora DATA_DIR / nombre con '../' o una ruta absoluta permite leer cualquier CSV del sistema (y una ruta absoluta reemplaza DATA_DIR). El docstring anterior prometía este rechazo.",
+      "suggested_fix": "Restaurar ruta = (DATA_DIR / nombre).resolve() y rechazar con ValueError si DATA_DIR no está en ruta.parents."
+    },
+    {
+      "rule_id": "missing-tests-new-option",
+      "category": "missing_tests",
+      "severity": "advisory",
+      "location": {
+        "file": "scripts/importar_tarifas.py",
+        "line": 24
+      },
+      "message": "Se añade la opción --moneda y se cambia la validación de rutas sin ningún test en el diff. Tampoco se actualiza README.md, que describe el uso del script (no aparece en el diff).",
+      "suggested_fix": "Añadir tests en tests/ para --moneda y para el rechazo de rutas fuera de data/, y documentar la opción en README.md."
+    },
+    {
+      "rule_id": "unused-import",
+      "category": "style",
+      "severity": "info",
+      "location": {
+        "file": "scripts/importar_tarifas.py",
+        "line": 9
+      },
+      "message": "Se importa json pero no se usa en ningún lugar del diff.",
+      "suggested_fix": "Eliminar el import si no hace falta."
+    }
+  ]
+}

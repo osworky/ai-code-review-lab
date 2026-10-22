@@ -1,0 +1,57 @@
+name: tests
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  commits:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
+        with:
+          python-version: "3.12"
+      - name: Conventional Commits
+        run: git log --no-merges --format=%s origin/${{ github.base_ref }}..HEAD | python scripts/check_commit_msg.py --stdin
+  scripts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
+        with:
+          python-version: "3.12"
+      - run: python -m unittest discover -s tests
+  skill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with:
+          node-version: "22"
+      - run: npm install --no-audit --no-fund
+        working-directory: skills/ai-code-review
+      - run: npm test
+        working-directory: skills/ai-code-review
+  bench:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with:
+          node-version: "22"
+      - name: Build the benchmark repositories and check the answer keys
+        run: |
+          git config --global user.name ci
+          git config --global user.email ci@example.invalid
+          for v in envios envios-v2; do
+            node bench/$v/build-repos.mjs "$RUNNER_TEMP/$v"
+            node bench/$v/check-citable.mjs "$RUNNER_TEMP/$v" "$RUNNER_TEMP/$v.key.json"
+          done

@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "findings": [
+    {
+      "rule_id": "pull-request-target-untrusted-code",
+      "category": "security",
+      "severity": "blocker",
+      "location": {
+        "file": ".github/workflows/deploy.yml",
+        "line": 12
+      },
+      "message": "El workflow se dispara con pull_request_target (línea 3), que corre con secretos y permisos de escritura, y hace checkout del SHA del head del PR (código controlado por quien abre el PR, incluso de forks). Después ejecuta npm ci && npm run build (línea 13) con DEPLOY_TOKEN en el entorno del job, de modo que scripts de instalación o de build del PR pueden robar el secreto.",
+      "suggested_fix": "Usar el evento pull_request (sin secretos) para construir código del PR, o desplegar solo desde push a la rama principal/workflow_dispatch. Si se necesita pull_request_target, no hacer checkout ni ejecutar código del PR."
+    },
+    {
+      "rule_id": "secret-printed-in-logs",
+      "category": "security",
+      "severity": "blocker",
+      "location": {
+        "file": ".github/workflows/deploy.yml",
+        "line": 14
+      },
+      "message": "El paso imprime DEPLOY_TOKEN con echo. Aunque GitHub enmascara secretos exactos en los registros, imprimirlo es una mala práctica y el enmascarado se evita fácilmente (p. ej. transformando el valor). Además el token está expuesto a nivel de job (línea 8), por lo que lo ven todos los pasos, incluido el código del PR.",
+      "suggested_fix": "Eliminar el echo del secreto y limitar el secreto al paso que realmente lo necesita (env a nivel de paso), nunca a nivel de job."
+    },
+    {
+      "rule_id": "shell-command-injection",
+      "category": "security",
+      "severity": "blocker",
+      "location": {
+        "file": "scripts/check_commit_msg.py",
+        "line": 94
+      },
+      "message": "os.system concatena `path` en un comando de shell. Una ruta con espacios o metacaracteres (`;`, `&`, `$()`) ejecuta comandos arbitrarios o rompe el comando; `path` llega como argumento externo.",
+      "suggested_fix": "Usar subprocess.run([\"prettier\", \"--write\", path], check=False) sin shell, o eliminar la llamada."
+    },
+    {
+      "rule_id": "missing-workflow-permissions",
+      "category": "security",
+      "severity": "advisory",
+      "location": {
+        "file": ".github/workflows/deploy.yml",
+        "line": 4
+      },
+      "message": "No se declara el bloque permissions. Con pull_request_target el GITHUB_TOKEN toma los permisos por defecto del repositorio, que pueden ser de lectura y escritura, y el código del PR corre con ellos. No puedo ver la configuración del repositorio, por eso no se marca como bloqueante.",
+      "suggested_fix": "Añadir permissions: contents: read a nivel de workflow (o job) y ampliar solo lo necesario."
+    },
+    {
+      "rule_id": "unpinned-action",
+      "category": "security",
+      "severity": "advisory",
+      "location": {
+        "file": ".github/workflows/deploy.yml",
+        "line": 10
+      },
+      "message": "actions/checkout@main apunta a una rama móvil, no a una versión ni a un SHA fijo. Un cambio aguas arriba se ejecutaría en un job con acceso a secretos.",
+      "suggested_fix": "Fijar la acción a un SHA de commit completo (o al menos a una etiqueta de versión como v4)."
+    },
+    {
+      "rule_id": "length-check-skipped-by-group",
+      "category": "correctness",
+      "severity": "advisory",
+      "location": {
+        "file": "scripts/check_commit_msg.py",
+        "line": 36
+      },
+      "message": "El límite de longitud ahora se omite cuando match.group(2) es truthy. No se ve la expresión regular, así que no consta qué captura el grupo 2 (¿scope o `!`?); si es el scope, cualquier subject con scope puede superar el límite sin error. Cambio de contrato sin explicación.",
+      "suggested_fix": "Documentar qué excepción se pretende y acotar la condición al caso concreto; no omitir el límite por tener scope."
+    },
+    {
+      "rule_id": "unreachable-after-main-guard",
+      "category": "correctness",
+      "severity": "advisory",
+      "location": {
+        "file": "scripts/check_commit_msg.py",
+        "line": 89
+      },
+      "message": "check_file se define después de `if __name__ == \"__main__\": sys.exit(main(...))`, así que al ejecutar el script nunca se define antes de salir y no se usa desde main. Además llama a check_message, que no aparece en el diff: puede no existir (no verificable aquí).",
+      "suggested_fix": "Mover la función antes del bloque __main__, conectarla a main y confirmar que check_message existe."
+    },
+    {
+      "rule_id": "unclosed-file-handle",
+      "category": "correctness",
+      "severity": "advisory",
+      "location": {
+        "file": "scripts/check_commit_msg.py",
+        "line": 93
+      },
+      "message": "open(path).read() no cierra el archivo ni fija la codificación; en Windows usa la codificación local y puede fallar o decodificar mal mensajes con acentos.",
+      "suggested_fix": "Usar `with open(path, encoding=\"utf-8\") as f: text = f.read()`."
+    },
+    {
+      "rule_id": "validator-overwrites-input",
+      "category": "correctness",
+      "severity": "advisory",
+      "location": {
+        "file": "scripts/check_commit_msg.py",
+        "line": 94
+      },
+      "message": "Una función de validación ejecuta `prettier --write` sobre el archivo del mensaje de commit: reescribe su propia entrada, tiene efectos secundarios no esperados en un validador y el texto ya se leyó antes de formatear, así que se valida contenido distinto del que queda guardado. Además prettier no está garantizado en el entorno ni es apropiado para mensajes de commit.",
+      "suggested_fix": "Quitar el formateo; que check_file solo lea y valide el mensaje."
+    },
+    {
+      "rule_id": "missing-job-timeout",
+      "category": "performance",
+      "severity": "info",
+      "location": {
+        "file": ".github/workflows/deploy.yml",
+        "line": 6
+      },
+      "message": "El job no define timeout-minutes; un npm ci o build colgado, o código malicioso de un PR, consumiría minutos de CI hasta el límite por defecto de 6 horas.",
+      "suggested_fix": "Añadir timeout-minutes (por ejemplo 15) al job."
+    },
+    {
+      "rule_id": "missing-tests-for-changed-logic",
+      "category": "missing_tests",
+      "severity": "info",
+      "location": {
+        "file": "scripts/check_commit_msg.py",
+        "line": 36
+      },
+      "message": "Se cambia la lógica del límite de longitud y se añade check_file sin tests en el diff.",
+      "suggested_fix": "Añadir casos de prueba para subjects largos con y sin el grupo 2 y para check_file."
+    }
+  ]
+}

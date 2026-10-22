@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "findings": [
+    {
+      "rule_id": "weight-boundary-off-by-one",
+      "category": "correctness",
+      "severity": "blocker",
+      "location": {
+        "file": "src/cotizar.ts",
+        "line": 5
+      },
+      "message": "El filtro pasó de kg <= t.maxKg a kg < t.maxKg. Un paquete que pesa exactamente maxKg deja de tener la tarifa que lo cubre, y puede quedar sin cotización (null) o cotizarse con una tarifa de mayor tramo. Cambia el precio que ve el cliente y el diff no trae test ni justificación del cambio de contrato. No veo en el diff cómo se define maxKg, pero el comentario 'cubren el peso pedido' sugiere un límite inclusivo.",
+      "suggested_fix": "Restaurar kg <= t.maxKg, o confirmar con negocio que el límite es exclusivo y añadir un test del borde."
+    },
+    {
+      "rule_id": "currency-mixed-comparison",
+      "category": "correctness",
+      "severity": "blocker",
+      "location": {
+        "file": "src/cotizar.ts",
+        "line": 15
+      },
+      "message": "masBarata ahora compara t.precio sin convertir a dólares. Las tarifas tienen monedas distintas (aDolares[t.moneda]), así que se puede elegir como más barata una opción que cuesta más en dólares y cobrar un precio incorrecto al cliente. El cambio además borra del comentario la aclaración 'en la misma moneda'.",
+      "suggested_fix": "Volver a comparar con enDolares(t) < enDolares(mejor) y restaurar el comentario."
+    },
+    {
+      "rule_id": "missing-test-for-new-logic",
+      "category": "missing_tests",
+      "severity": "advisory",
+      "location": {
+        "file": "src/cotizar.ts",
+        "line": 21
+      },
+      "message": "conRecargoFragil (exportada) y el nuevo parámetro fragil de cotizar cambian el dinero que ve el cliente, pero el diff no incluye tests: ni del mínimo de 2 dólares, ni del 15 %, ni de los cambios de borde y de comparación de arriba.",
+      "suggested_fix": "Añadir tests en tests/ para recargo con total bajo y alto, fragil=false, el peso exacto en el límite y la comparación entre monedas."
+    }
+  ]
+}

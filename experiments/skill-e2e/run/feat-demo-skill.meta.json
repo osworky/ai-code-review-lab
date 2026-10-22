@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "diffHash": "8024ffaed9a153527f2cea3803a7e022e81d034d90bc5718521c5f9a33b6681c",
+  "cacheKey": "d65c80fb5de7f5d03559847fb1b7e89dc2d579de8c507800305e251bfff2f769",
+  "promptHash": "a7187816745c6651b86fcb68e8a5cc1facb1a77ba48a747b5784b73f61e18c22",
+  "model": "claude-sonnet-5-5",
+  "base": "origin/main",
+  "route": "small",
+  "createdAt": "2026-10-22T20:21:30.923Z",
+  "complete": true,
+  "buckets": {
+    "infra": {
+      "status": "valid",
+      "findings": 5
+    },
+    "python": {
+      "status": "valid",
+      "findings": 6
+    }
+  },
+  "duplicatesRemoved": 0,
+  "droppedByCap": 0
+}

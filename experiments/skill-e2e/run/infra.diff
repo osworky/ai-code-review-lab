@@ -1,0 +1,20 @@
+diff --git a/.github/workflows/deploy.yml b/.github/workflows/deploy.yml
+new file mode 100644
+index 00000000..d3a10e8e
+--- /dev/null
++++ b/.github/workflows/deploy.yml
+@@ -0,0 +1,14 @@
+    1| +name: Deploy
+    2| +on:
+    3| +  pull_request_target:
+    4| +jobs:
+    5| +  deploy:
+    6| +    runs-on: ubuntu-latest
+    7| +    env:
+    8| +      DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+    9| +    steps:
+   10| +      - uses: actions/checkout@main
+   11| +        with:
+   12| +          ref: ${{ github.event.pull_request.head.sha }}
+   13| +      - run: npm ci && npm run build
+   14| +      - run: echo "deploying with $DEPLOY_TOKEN"

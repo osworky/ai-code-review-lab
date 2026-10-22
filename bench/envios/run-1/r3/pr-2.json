@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "findings": [
+    {
+      "rule_id": "weakened-date-validation",
+      "category": "correctness",
+      "severity": "advisory",
+      "location": {
+        "file": "src/fechas.ts",
+        "line": 8
+      },
+      "message": "Se quitó la comprobación de que la fecha existe en el calendario y se reemplazó por un rango de día 1-31. Fechas inexistentes como 2026-02-31 o 2026-04-31 ahora se aceptan y Date.UTC las desborda al mes siguiente (2026-03-03), así que una fecha de entrega inválida produce una fecha distinta sin error. Afecta al cálculo de fechas de entrega, zona sensible del proyecto. No veo en el diff un test que cubra este caso.",
+      "suggested_fix": "Restaurar la verificación de ida y vuelta (getUTCFullYear/getUTCMonth/getUTCDate iguales a los valores de entrada) y devolver null si no coinciden."
+    },
+    {
+      "rule_id": "new-export-without-test",
+      "category": "missing_tests",
+      "severity": "advisory",
+      "location": {
+        "file": "src/fechas.ts",
+        "line": 30
+      },
+      "message": "Se añade la función exportada coincideTotal y se cambian parseFecha (validación) y diasHasta (ahora devuelve 0 para entregas vencidas) sin que el diff incluya tests en tests/. El cambio de comportamiento en entregas vencidas y fechas inexistentes queda sin cubrir.",
+      "suggested_fix": "Añadir tests en tests/ para coincideTotal (decimales, vacío, NaN), parseFecha con fechas inexistentes y diasHasta con entrega pasada."
+    },
+    {
+      "rule_id": "float-money-equality",
+      "category": "correctness",
+      "severity": "advisory",
+      "location": {
+        "file": "src/fechas.ts",
+        "line": 32
+      },
+      "message": "coincideTotal suma importes en un campo `precio` (no en centavos enteros, a diferencia de totalEnCentavos) y los compara con === contra un valor declarado por el cliente. Con decimales de coma flotante (0.1 + 0.2 !== 0.3) puede rechazar totales correctos o, según el origen del valor, aceptar incorrectos. Además `declarado` es una entrada externa sin validar (NaN nunca coincide).",
+      "suggested_fix": "Trabajar en centavos enteros (precioCentavos y declarado en centavos) o redondear ambos lados a centavos antes de comparar, y validar que declarado sea un número finito."
+    }
+  ]
+}

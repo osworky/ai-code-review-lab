@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "findings": [
+    {
+      "rule_id": "quadratic-loop",
+      "category": "performance",
+      "severity": "advisory",
+      "location": {
+        "file": "src/reporte.ts",
+        "line": 18
+      },
+      "message": "Dentro del bucle sobre cada evento se vuelve a filtrar todo el arreglo `filas` para contar la zona, lo que hace el reporte cuadrático (hasta 2000 x 2000 operaciones). Antes bastaba con incrementar el contador. Además repite el mismo conteo por cada evento de la misma zona.",
+      "suggested_fix": "Volver a `resumen[e.zona].n += 1`."
+    },
+    {
+      "rule_id": "repeated-lookup-in-loop",
+      "category": "performance",
+      "severity": "advisory",
+      "location": {
+        "file": "src/reporte.ts",
+        "line": 28
+      },
+      "message": "Se busca la tarifa con `tarifas.find` para cada evento, recorriendo la lista de tarifas en cada iteración (coste eventos x tarifas). Se eliminó la tabla `Map` que se armaba una sola vez.",
+      "suggested_fix": "Restaurar `const porId = new Map(tarifas.map((t) => [t.id, t]))` antes del bucle y usar `porId.get(e.tarifaId)`."
+    },
+    {
+      "rule_id": "repeated-sort-in-loop",
+      "category": "performance",
+      "severity": "advisory",
+      "location": {
+        "file": "src/reporte.ts",
+        "line": 38
+      },
+      "message": "Se copia y ordena todo el arreglo de eventos dentro del bucle de zonas, repitiendo el mismo ordenamiento una vez por zona (4 veces) cuando el resultado es idéntico. Es trabajo repetido sin necesidad; antes se ordenaba una sola vez.",
+      "suggested_fix": "Sacar `const ordenados = [...eventos].sort((a, b) => b.ts - a.ts)` fuera del bucle de zonas."
+    }
+  ]
+}

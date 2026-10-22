@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "findings": [
+    {
+      "rule_id": "excessive-workflow-permissions",
+      "category": "security",
+      "severity": "blocker",
+      "location": {
+        "file": ".github/workflows/ci.yml",
+        "line": 25
+      },
+      "message": "permissions: write-all da al GITHUB_TOKEN escritura en todos los ámbitos en un job que además ejecuta una acción de terceros y tiene acceso a un secreto de despliegue. Es mucho más de lo necesario.",
+      "suggested_fix": "Usar permissions: contents: read (y solo los permisos adicionales estrictamente necesarios)."
+    },
+    {
+      "rule_id": "secret-printed-in-logs",
+      "category": "security",
+      "severity": "blocker",
+      "location": {
+        "file": ".github/workflows/ci.yml",
+        "line": 31
+      },
+      "message": "El paso imprime DEPLOY_TOKEN con echo. Aunque GitHub enmascara secretos conocidos, el valor puede filtrarse a los registros (transformaciones, codificaciones) y quedar visible para quien lea el log.",
+      "suggested_fix": "Eliminar el echo del token; imprimir solo un mensaje sin el secreto."
+    },
+    {
+      "rule_id": "unexplained-price-multiplier",
+      "category": "correctness",
+      "severity": "blocker",
+      "location": {
+        "file": "src/cotizar.ts",
+        "line": 23
+      },
+      "message": "El total que ve el cliente ahora se multiplica por 1.18 con una constante mágica sin nombre, sin explicación (¿impuesto?, ¿margen?) y sin test en el diff. Cambia el dinero del cliente, una zona de decisión humana. Además, el multiplicador se aplica solo a total_usd y no a la tarifa, así que tarifa y total pueden quedar inconsistentes.",
+      "suggested_fix": "Confirmar con una persona que el 1.18 es intencional, extraerlo a una constante con nombre y documentada, redondear a centavos y añadir un test del total."
+    },
+    {
+      "rule_id": "unpinned-third-party-action",
+      "category": "security",
+      "severity": "advisory",
+      "location": {
+        "file": ".github/workflows/ci.yml",
+        "line": 30
+      },
+      "message": "acme/deploy-action@v1 es una acción de terceros con una etiqueta mutable, no un SHA. Recibe DEPLOY_TOKEN (definido a nivel de job, línea 27) y un token con write-all, así que un cambio en la etiqueta expondría ambos.",
+      "suggested_fix": "Fijar la acción a un SHA de commit completo y declarar DEPLOY_TOKEN solo en el paso que lo necesita."
+    },
+    {
+      "rule_id": "breaking-rename-public-field",
+      "category": "correctness",
+      "severity": "advisory",
+      "location": {
+        "file": "src/cotizar.ts",
+        "line": 18
+      },
+      "message": "El tipo exportado Cotizacion renombra totalUsd a total_usd. Es un cambio incompatible para quien consuma el campo; en el diff no se ven los usos (reporte, API, tests), así que no se puede confirmar que todos se actualizaron. También rompe la convención camelCase del resto del código.",
+      "suggested_fix": "Verificar todos los usos de totalUsd, mantener camelCase o documentar la migración y actualizar docs/api.md y los tests si el campo es público."
+    },
+    {
+      "rule_id": "magic-weight-limit-without-test",
+      "category": "missing_tests",
+      "severity": "advisory",
+      "location": {
+        "file": "src/cotizar.ts",
+        "line": 21
+      },
+      "message": "Se añade un tope de 23.5 kg que hace que cotizar devuelva null, sin constante con nombre, sin documentación y sin test del caso límite (23.5 y 23.51) en el diff. Un envío válido pesado queda sin cotización sin explicación al usuario.",
+      "suggested_fix": "Extraer el límite a una constante documentada, añadir tests de frontera y registrarlo en README.md o docs."
+    }
+  ]
+}

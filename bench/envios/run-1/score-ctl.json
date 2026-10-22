@@ -1,0 +1,290 @@
+{
+  "findings": 25,
+  "recall": {
+    "hits": 18,
+    "of": 18
+  },
+  "byCategory": {
+    "correctness": {
+      "hits": 4,
+      "of": 4
+    },
+    "missing_tests": {
+      "hits": 2,
+      "of": 2
+    },
+    "security": {
+      "hits": 5,
+      "of": 5
+    },
+    "documentation": {
+      "hits": 2,
+      "of": 2
+    },
+    "performance": {
+      "hits": 3,
+      "of": 3
+    },
+    "style": {
+      "hits": 2,
+      "of": 2
+    }
+  },
+  "byOrigin": {
+    "real": {
+      "hits": 9,
+      "of": 9
+    },
+    "invented": {
+      "hits": 9,
+      "of": 9
+    }
+  },
+  "byKind": {
+    "commission": {
+      "hits": 14,
+      "of": 14
+    },
+    "omission": {
+      "hits": 4,
+      "of": 4
+    }
+  },
+  "decoyAlarms": {
+    "alarms": 0,
+    "of": 6
+  },
+  "excess": 3,
+  "missed": [],
+  "perDefect": [
+    {
+      "id": "D01",
+      "pr": 1,
+      "category": "correctness",
+      "origin": "real",
+      "kind": "commission",
+      "hit": true,
+      "by": [
+        "currency-not-normalized"
+      ]
+    },
+    {
+      "id": "D02",
+      "pr": 1,
+      "category": "correctness",
+      "origin": "invented",
+      "kind": "commission",
+      "hit": true,
+      "by": [
+        "boundary-condition-changed"
+      ]
+    },
+    {
+      "id": "D03",
+      "pr": 1,
+      "category": "missing_tests",
+      "origin": "real",
+      "kind": "omission",
+      "hit": true,
+      "by": [
+        "missing-tests-for-new-logic"
+      ]
+    },
+    {
+      "id": "D04",
+      "pr": 2,
+      "category": "correctness",
+      "origin": "real",
+      "kind": "commission",
+      "hit": true,
+      "by": [
+        "weak-date-validation"
+      ]
+    },
+    {
+      "id": "D05",
+      "pr": 2,
+      "category": "correctness",
+      "origin": "invented",
+      "kind": "commission",
+      "hit": true,
+      "by": [
+        "float-equality-on-money",
+        "missing-tests-for-changed-logic"
+      ]
+    },
+    {
+      "id": "D06",
+      "pr": 2,
+      "category": "missing_tests",
+      "origin": "invented",
+      "kind": "omission",
+      "hit": true,
+      "by": [
+        "silent-clamp-overdue-days"
+      ]
+    },
+    {
+      "id": "D07",
+      "pr": 3,
+      "category": "security",
+      "origin": "real",
+      "kind": "commission",
+      "hit": true,
+      "by": [
+        "nested-array-not-validated"
+      ]
+    },
+    {
+      "id": "D08",
+      "pr": 3,
+      "category": "security",
+      "origin": "real",
+      "kind": "commission",
+      "hit": true,
+      "by": [
+        "missing-allowlist"
+      ]
+    },
+    {
+      "id": "D09",
+      "pr": 3,
+      "category": "documentation",
+      "origin": "real",
+      "kind": "omission",
+      "hit": true,
+      "by": [
+        "api-contract-change-undocumented"
+      ]
+    },
+    {
+      "id": "D10",
+      "pr": 4,
+      "category": "performance",
+      "origin": "real",
+      "kind": "commission",
+      "hit": true,
+      "by": [
+        "quadratic-loop"
+      ]
+    },
+    {
+      "id": "D11",
+      "pr": 4,
+      "category": "performance",
+      "origin": "invented",
+      "kind": "commission",
+      "hit": true,
+      "by": [
+        "repeated-linear-lookup"
+      ]
+    },
+    {
+      "id": "D12",
+      "pr": 4,
+      "category": "performance",
+      "origin": "invented",
+      "kind": "commission",
+      "hit": true,
+      "by": [
+        "repeated-work-in-loop"
+      ]
+    },
+    {
+      "id": "D13",
+      "pr": 5,
+      "category": "security",
+      "origin": "invented",
+      "kind": "commission",
+      "hit": true,
+      "by": [
+        "path-traversal"
+      ]
+    },
+    {
+      "id": "D14",
+      "pr": 5,
+      "category": "style",
+      "origin": "real",
+      "kind": "commission",
+      "hit": true,
+      "by": [
+        "unused-import"
+      ]
+    },
+    {
+      "id": "D15",
+      "pr": 5,
+      "category": "documentation",
+      "origin": "invented",
+      "kind": "omission",
+      "hit": true,
+      "by": [
+        "missing-tests-new-option"
+      ]
+    },
+    {
+      "id": "D16",
+      "pr": 6,
+      "category": "security",
+      "origin": "invented",
+      "kind": "commission",
+      "hit": true,
+      "by": [
+        "excessive-workflow-permissions"
+      ]
+    },
+    {
+      "id": "D17",
+      "pr": 6,
+      "category": "security",
+      "origin": "real",
+      "kind": "commission",
+      "hit": true,
+      "by": [
+        "secret-printed-in-logs",
+        "unpinned-third-party-action"
+      ]
+    },
+    {
+      "id": "D18",
+      "pr": 6,
+      "category": "style",
+      "origin": "invented",
+      "kind": "commission",
+      "hit": true,
+      "by": [
+        "unexplained-price-markup",
+        "magic-weight-limit",
+        "logic-change-without-tests"
+      ]
+    }
+  ],
+  "decoyDetail": [],
+  "excessDetail": [
+    {
+      "pr": 3,
+      "rule_id": "missing-regression-test",
+      "category": "missing_tests",
+      "severity": "advisory",
+      "at": "tests/api-eventos.test.ts:21",
+      "message": "Los tests cambian para aceptar cualquier origen (se elimina el que rechazaba un origen fuera de lista) y no hay ningún test de claves reservadas ni profundidad dentro de arreglos, ni del nuevo límite "
+    },
+    {
+      "pr": 5,
+      "rule_id": "undocumented-cli-option",
+      "category": "documentation",
+      "severity": "info",
+      "at": "scripts/importar_tarifas.py:29",
+      "message": "La nueva opción --moneda cambia el uso del script, pero el diff no actualiza el README.md, que describe su uso."
+    },
+    {
+      "pr": 6,
+      "rule_id": "breaking-field-rename",
+      "category": "correctness",
+      "severity": "advisory",
+      "at": "src/cotizar.ts:18",
+      "message": "Cotizacion.totalUsd pasa a total_usd, un cambio incompatible del tipo exportado y mezcla camelCase con snake_case (tarifa, tarifaId). Los consumidores no aparecen en el diff, asi que podrian romperse."
+    }
+  ]
+}

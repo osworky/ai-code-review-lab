@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="es" data-lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guía: IA en pruebas y revisión de código · ai-code-review-lab</title>
+<meta name="description" content="Guía del método: pistas de tests y de revisión de código con IA, qué medir y sus trampas.">
+<meta property="og:title" content="Guía: IA en pruebas y revisión de código · ai-code-review-lab">
+<meta property="og:description" content="Guía del método: pistas de tests y de revisión de código con IA, qué medir y sus trampas.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://osworky.github.io/ai-code-review-lab/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232a78d6'/%3E%3Cpath d='M8 17l5 5 11-12' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<header class="top"><div class="wrap">
+<a class="brand" href="../">ai-code-review-lab</a>
+<nav class="nav" aria-label="Principal">
+<a href="../"><span lang="es">Inicio</span><span lang="en">Home</span></a>
+<a href="../guia/" aria-current="page"><span lang="es">Guía</span><span lang="en">Guide</span></a>
+<a href="../caso/"><span lang="es">Caso de estudio</span><span lang="en">Case study</span></a>
+<a href="../roadmap/">Roadmap</a>
+<a href="https://github.com/osworky/ai-code-review-lab">GitHub</a>
+</nav>
+<div class="lang" role="group" aria-label="Idioma / Language"><button type="button" data-l="es" aria-pressed="true">ES</button><button type="button" data-l="en" aria-pressed="false">EN</button></div>
+</div></header>
+<div class="wrap doc">
+<aside class="toc" aria-label="Contenido"><strong>Contenido</strong><ul><li class="l2"><a href="#1-principios">1. Principios</a></li><li class="l2"><a href="#2-mapa">2. Mapa</a></li><li class="l2"><a href="#3-pista-1-tests-con-ia">3. Pista 1: tests con IA</a></li><li class="l2"><a href="#4-pista-2-revision-de-codigo-con-ia">4. Pista 2: revisión de código con IA</a></li><li class="l2"><a href="#5-pista-3-seguridad-transversal">5. Pista 3: seguridad (transversal)</a></li><li class="l2"><a href="#6-que-medir-y-sus-trampas">6. Qué medir y sus trampas</a></li><li class="l3"><a href="#lo-aprendido-al-aplicarlo-a-un-repositorio-real">Lo aprendido al aplicarlo a un repositorio real</a></li><li class="l2"><a href="#7-glosario">7. Glosario</a></li><li class="l2"><a href="#8-decisiones-frecuentes">8. Decisiones frecuentes</a></li><li class="l2"><a href="#9-como-adoptarlo-en-otro-codigo">9. Cómo adoptarlo en otro código</a></li><li class="l2"><a href="#10-comandos-del-lab">10. Comandos del lab</a></li><li class="l2"><a href="#11-anti-patrones">11. Anti-patrones</a></li><li class="l2"><a href="#12-limites-de-esta-guia">12. Límites de esta guía</a></li></ul></aside>
+<article>
+<p class="note"><span lang="es">Documento en español. La portada tiene un resumen en inglés.</span><span lang="en">Document in Spanish. The home page has an English summary.</span></p>
+<h1 id="guia-ia-en-pruebas-y-revision-de-codigo">Guía: IA en pruebas y revisión de código</h1>
+<p>Una guía de estudio y de implementación, pensada para llevarla a otro código. No depende de un proyecto concreto: los resultados medidos en uno real están en <code>caso-de-estudio.md</code>.</p>
+<p><strong>Cómo leerla</strong></p>
+<ul><li>Para <strong>estudiar</strong>: secciones 1, 2, 6 y 7 (principios, mapa, medición y glosario).</li><li>Para <strong>implementar</strong>: secciones 3, 4, 5, 8 y 9 (pasos, plantillas, decisiones y adopción).</li></ul>
+<p>Marcas de estado de cada pieza del lab: <strong>✔ usado y medido</strong> (se ejecutó y tiene resultados), <strong>◌ diseño</strong> (pensado, sin ejecutar). Las herramientas citadas (Stryker, Semgrep, etc.) son ejemplos: sirve cualquier equivalente.</p>
+<hr>
+<h2 id="1-principios">1. Principios</h2>
+<ol><li><strong>La IA abarata producir, no transfiere la responsabilidad.</strong> Pasas de consumidor a editor: los contratos los decides tú.</li><li><strong>Primero la rúbrica, luego el prompt.</strong> Sin categorías nombradas, la IA comenta lo más abundante: el estilo.</li><li><strong>El prompt es código:</strong> versionado, por pull request y con registro de quién aprobó.</li><li><strong>Se mide antes de automatizar.</strong> Mutantes para los tests; acuerdo con humanos para el revisor.</li><li><strong>Lo que decide se valida sin IA:</strong> un script determinista, no otro modelo.</li><li><strong>Un contrato por modo de falla.</strong> Si el negocio no decidió, queda &quot;pendiente de decisión&quot; y no se convierte en test.</li><li><strong>Toda cifra lleva su límite</strong> (cuántos módulos, cuántas corridas, cuántos etiquetadores).</li></ol>
+<h2 id="2-mapa">2. Mapa</h2>
+<pre><code> PISTA 1: tests                         PISTA 2: revisión de código
+ módulo congelado                       rúbrica de categorías
+   -&gt; catálogo de modos de falla          -&gt; rama con defectos sembrados
+   -&gt; contratos firmados                  -&gt; revisor en prosa -&gt; JSON validado
+   -&gt; tests de lo confirmado              -&gt; router y política por fase
+   -&gt; mutation testing y triaje           -&gt; CI en shadow -&gt; calibración
+   -&gt; experimento controlado              -&gt; flywheel con historial humano
+                  \                      /
+                   PISTA 3: seguridad (transversal)
+        SAST + IA · red team · dependencias · seguridad de LLM</code></pre>
+<hr>
+<h2 id="3-pista-1-tests-con-ia">3. Pista 1: tests con IA</h2>
+<div class="table-wrap"><table><thead><tr><th>#</th><th>Paso</th><th>Entregable</th><th>Prompt o script del lab</th><th>Estado</th></tr></thead><tbody><tr><td>1</td><td>Elegir un módulo con lógica pura y <strong>congelarlo</strong> con un hash</td><td>manifiesto</td><td>(por proyecto)</td><td>✔</td></tr><tr><td>2</td><td><strong>Descubrir antes de escribir:</strong> modos de falla por frontera, equivalencia, vacío y contrato de negocio, con <code>archivo:línea</code></td><td>catálogo</td><td><code>prompts/failure-modes</code></td><td>✔</td></tr><tr><td>3</td><td>Un humano <strong>firma</strong> cada contrato pendiente, con fecha</td><td>catálogo firmado</td><td>tú</td><td>✔</td></tr><tr><td>4</td><td>Generar tests <strong>solo de los contratos confirmados</strong>: AAA, un ID por test</td><td>suite</td><td><code>prompts/tests-3-layers</code></td><td>✔</td></tr><tr><td>5</td><td>Los tests <strong>rojos</strong> señalan código por corregir: cambio mínimo, sin tocar tests ni catálogo</td><td>código alineado</td><td><code>prompts/fix-red-tests</code></td><td>✔</td></tr><tr><td>6</td><td><strong>Mutation testing</strong>: puntaje y supervivencia</td><td>informe</td><td>herramienta de mutación</td><td>✔</td></tr><tr><td>7</td><td><strong>Triaje de sobrevivientes</strong>: equivalente, contrato firmado sin test, o sin contrato</td><td>tests nuevos y modos propuestos</td><td><code>prompts/mutation-triage</code></td><td>✔</td></tr><tr><td>8</td><td><strong>Experimento controlado</strong> entre prompts: mismo código congelado, mismas métricas</td><td>tabla por brazo</td><td><code>scripts/compare_mutation.py</code></td><td>✔</td></tr><tr><td>9</td><td>Pruebas adversariales ancladas a OWASP</td><td>suite roja</td><td>un borrador de prompt (no publicado en esta versión)</td><td>◌</td></tr></tbody></table></div>
+<p><strong>Plantilla de una entrada de catálogo</strong></p>
+<pre><code>ID: B1                         Categoría: frontera | equivalencia | vacío | contrato
+Riesgo: alto | medio | bajo
+Entrada que lo dispara: ...
+Comportamiento observado: ...  (cita archivo:línea y verifícalo ejecutando)
+Contrato esperado: ...
+Estado: confirmado | pendiente de decisión
+Decisión: &lt;qué se decidió, quién, cuándo&gt;     (solo si está confirmado)
+Por qué importa: ...</code></pre>
+<p><strong>Reglas que evitan el autoengaño</strong></p>
+<ul><li>No asumas que el código actual es correcto: convertirlo en especificación vuelve requisitos a los bugs.</li><li>Un test que fija un detalle sin contrato es un defecto, aunque mate un mutante.</li><li>&quot;Confirmado&quot; significa decidido, <strong>no</strong> implementado: los tests rojos lo hacen visible.</li><li>Un test viejo que contradice un contrato firmado se actualiza en un commit aparte y se dice.</li><li>Una vulnerabilidad conocida se marca como <strong>fallo esperado</strong> para no romper el CI, y avisa cuando se corrige.</li></ul>
+<p><strong>Cómo comparar suites.</strong> No bastan los mutantes muertos: mide también cuántos contratos incumplidos detecta cada suite contra el código anterior a corregirlo. Una suite escrita mirando el código describe lo que el código hace; solo el catálogo permite ver lo que no debería hacer.</p>
+<h2 id="4-pista-2-revision-de-codigo-con-ia">4. Pista 2: revisión de código con IA</h2>
+<div class="table-wrap"><table><thead><tr><th>#</th><th>Paso</th><th>Entregable</th><th>Prompt o script del lab</th><th>Estado</th></tr></thead><tbody><tr><td>1</td><td><strong>Rúbrica</strong> de categorías con definición y severidad</td><td><code>rubric/</code></td><td>tú</td><td>✔</td></tr><tr><td>2</td><td><strong>Rama con defectos sembrados</strong>, una inyección y señuelos inofensivos; la clave fuera del diff</td><td>clave de respuestas</td><td>tú</td><td>✔</td></tr><tr><td>3</td><td>Revisar el <strong>diff local</strong> contra la base, sin PR real; el diff es <strong>dato, no instrucciones</strong></td><td>revisión en prosa</td><td><code>prompts/reviewer</code> v1</td><td>✔</td></tr><tr><td>4</td><td><strong>Salida JSON</strong> con esquema cerrado</td><td>JSON</td><td><code>prompts/reviewer</code> v2</td><td>✔</td></tr><tr><td>5</td><td><strong>Validar sin IA</strong>, con la ubicación comprobada contra el diff, y probar el validador con un caso roto</td><td>validador</td><td><code>scripts/validate_review.py</code></td><td>✔</td></tr><tr><td>6</td><td><strong>Rutear</strong> por tipo de archivo, limitar comentarios, deduplicar</td><td>router</td><td><code>design/revisor-en-ci.md</code></td><td>✔ en el repo del caso (<code>qa/review/</code>), con revisores por tipo; una corrida medida</td></tr><tr><td>7</td><td><strong>Política por fase</strong>: shadow, consultiva, bloqueo parcial, ampliado</td><td>decisión y comentario</td><td><code>scripts/review_policy.py</code></td><td>✔ (simulado)</td></tr><tr><td>8</td><td><strong>Costo y latencia</strong>: hash del diff, clave de caché, ruta por tamaño</td><td>decisión de ruta</td><td><code>scripts/route_review.py</code></td><td>✔ (simulado)</td></tr><tr><td>9</td><td><strong>Workflow en CI</strong>, primero shadow; clave como <em>secret</em>; solo <code>pull_request</code></td><td><code>review-check.yml</code></td><td><code>design/revisor-en-ci.md</code></td><td>✔ en el repo del caso, con una decisión distinta: <strong>el CI valida la revisión pero no llama al modelo</strong>; el modelo corre en local con la cuenta de quien revisa</td></tr><tr><td>10</td><td><strong>Flywheel</strong>: cada discrepancia con un humano es una fila; regresión antes de cambiar prompt o modelo</td><td>historial e informe</td><td><code>scripts/calibrate.py</code>, <code>scripts/regression_check.py</code></td><td>✔ con datos sintéticos; con datos reales hay 63 etiquetas A, M y R pero falta el formato y los casos donde el revisor calla (ver <code>roadmap.md</code>)</td></tr><tr><td>11</td><td><strong>Política de calibración</strong> generada con datos reales</td><td><code>calibration-policy.md</code></td><td>un borrador de prompt (no publicado en esta versión)</td><td>✔ ejecutada una vez: con la evidencia actual sale &quot;datos insuficientes&quot; (la evidencia privada del caso)</td></tr></tbody></table></div>
+<p><strong>Esquema de salida del revisor</strong></p>
+<pre><code class="language-json">{ &quot;schema_version&quot;: 1,
+  &quot;findings&quot;: [ { &quot;rule_id&quot;: &quot;missing-authorization&quot;,
+                  &quot;category&quot;: &quot;security&quot;,
+                  &quot;severity&quot;: &quot;blocker&quot;,
+                  &quot;location&quot;: { &quot;file&quot;: &quot;app/api/route.ts&quot;, &quot;line&quot;: 50 },
+                  &quot;message&quot;: &quot;Por qué importa.&quot;,
+                  &quot;suggested_fix&quot;: &quot;Corrección breve.&quot; } ] }</code></pre>
+<p><code>category</code>: <code>correctness</code>, <code>security</code>, <code>performance</code>, <code>missing_tests</code>, <code>style</code>, <code>documentation</code>. <code>severity</code>: <code>blocker</code> (puede bloquear), <code>advisory</code> (advierte), <code>info</code> (se registra). Sin hallazgos: <code>&quot;findings&quot;: []</code>.</p>
+<p><strong>Fases del despliegue</strong></p>
+<div class="table-wrap"><table><thead><tr><th>Fase</th><th>Qué hace el revisor</th><th>Para subir</th></tr></thead><tbody><tr><td>1. Shadow</td><td>Registra; no muestra ni bloquea</td><td>Datos y etiquetas humanas suficientes</td></tr><tr><td>2. Consultiva</td><td>Comenta; no bloquea (el veredicto del modelo es una señal)</td><td>Acuerdo medido por categoría</td></tr><tr><td>3. Bloqueo parcial</td><td>Bloquea solo una lista de reglas</td><td>Estabilidad sostenida y pocos falsos positivos</td></tr><tr><td>4. Bloqueo ampliado</td><td>La lista crece con los datos</td><td>Revisión periódica</td></tr></tbody></table></div>
+<p>Un falso positivo temprano destruye la confianza: una regla pasa a bloqueante solo cuando su acuerdo <strong>medido</strong> con humanos es alto, con suficientes casos y un intervalo que lo respalde.</p>
+<h2 id="5-pista-3-seguridad-transversal">5. Pista 3: seguridad (transversal)</h2>
+<div class="table-wrap"><table><thead><tr><th>Tema</th><th>Idea</th><th>Estado</th></tr></thead><tbody><tr><td>SAST + IA</td><td>La herramienta estática encuentra, la IA clasifica (<code>true</code>, <code>false positive</code>, <code>human require</code>), cada patrón confirmado se vuelve regla <strong>probada</strong></td><td>✔ una corrida: el modelo dejó 19 de 19 alarmas como <code>human require</code> (el usuario las consideró reales); necesita una política declarada en el prompt</td></tr><tr><td>Red team</td><td>Familias de OWASP; la expectativa describe el comportamiento seguro, no la vulnerabilidad</td><td>✔ una corrida: 46 pruebas, 18 detectaron un defecto, 13 más resultaron reales</td></tr><tr><td>Cadena de suministro</td><td>La verdad sobre un paquete la da el registro; un nombre recién registrado también es señal</td><td>✔ contra el registro real (61 dependencias); mide existencia, no vulnerabilidades</td></tr><tr><td>Seguridad de LLM</td><td>Inyección, fuga del prompt, exceso de agencia; recortar privilegios antes que filtrar</td><td>◌ aplazado: se hará sobre una app que use un modelo</td></tr><tr><td>Auditoría legacy</td><td>Tour y punto de control humano antes de pedir hallazgos; sin línea citada, no hay hallazgo</td><td>✔ dos archivos; las citas se verifican con un script</td></tr></tbody></table></div>
+<p>Detalle de cada tema en las notas de estudio (no publicadas).</p>
+<h2 id="6-que-medir-y-sus-trampas">6. Qué medir y sus trampas</h2>
+<div class="table-wrap"><table><thead><tr><th>Métrica</th><th>Para qué sirve</th><th>Trampa</th></tr></thead><tbody><tr><td>Puntaje de mutación (y su complemento, la supervivencia)</td><td>Sensibilidad de una suite a cambios en el código</td><td>Los mutantes equivalentes la rebajan; no dice si los tests prueban lo correcto</td></tr><tr><td>Contratos incumplidos detectados</td><td>Si la suite protege lo decidido por el negocio</td><td>Requiere un catálogo firmado y el código anterior</td></tr><tr><td>Acuerdo con humanos</td><td>Cuánto coincide el revisor con las personas</td><td>Con casi todo &quot;pass&quot;, un revisor trivial acierta 95 %</td></tr><tr><td><strong>Kappa de Cohen</strong></td><td>Acuerdo descontando el azar</td><td>Inestable con pocos casos; pide un intervalo</td></tr><tr><td>Precisión y recall de &quot;bloquear&quot;</td><td>Costo de un bloqueo equivocado frente a un bug perdido</td><td>Sin una clase negativa (falsos positivos) la precisión no significa nada</td></tr><tr><td>Estabilidad entre corridas</td><td>Cuánto cambia el veredicto con el mismo diff</td><td>Una corrida no la mide. En el caso real, dos corridas del mismo diff compartieron entre 0,26 y 0,59 de sus hallazgos</td></tr><tr><td><strong>Recall contra una respuesta preregistrada</strong></td><td>Cuántos defectos conocidos ve el revisor</td><td>La respuesta debe salir de otra vía (pruebas, auditoría independiente), no del propio revisor; un <strong>foco redactado con los mismos hallazgos</strong> infla el resultado, y por eso hace falta una corrida de control sin foco</td></tr><tr><td>Precisión sobre hallazgos etiquetados</td><td>Cuánto de lo que dice el revisor es real</td><td>Solo cuenta lo que levantó: sin casos donde calla no hay falsos negativos; y si el etiquetador ve la comprobación antes de decidir, la etiqueta no es ciega</td></tr><tr><td>Regresión</td><td>Que un cambio no rompa lo que funcionaba</td><td>Un promedio mejor puede esconder un caso roto</td></tr></tbody></table></div>
+<p>Reglas: por debajo de unos 30 casos por categoría, &quot;datos insuficientes&quot;. Las tasas se estiman con una <strong>muestra aleatoria</strong>, no con las filas añadidas por discrepancia (sesgo de muestreo). La decisión humana la pone una persona: si la IA rellenara ambas columnas, el acuerdo sería 100 % por construcción.</p>
+<h3 id="lo-aprendido-al-aplicarlo-a-un-repositorio-real">Lo aprendido al aplicarlo a un repositorio real</h3>
+<p>Detalle y cifras en la segunda fase de <code>caso-de-estudio.md</code>. Lo que cambia cómo se usa el método:</p>
+<ol><li><strong>Leer el diff y atacar el código encuentran cosas distintas.</strong> Un revisor sobre el diff no vio ninguno de los cinco defectos de omisión que unas pruebas adversariales sí encontraron. Hacen falta las dos vías.</li><li><strong>Presenta cada hallazgo con su comprobación antes de pedir la etiqueta.</strong> Evita etiquetar afirmaciones falsas, y se detectaron errores del propio coordinador (un verificador mal escrito, una premisa no comprobada).</li><li><strong>El contexto recortado fabrica ruido.</strong> Un hallazgo que depende de un archivo que el revisor no ve debe marcarse como tal; no siempre lo hace.</li><li><strong>Una regla de &quot;ante la duda, que decida un humano&quot; produce 100 % de dudas.</strong> Si quieres que el modelo se comprometa, el prompt debe declarar la política del proyecto.</li><li><strong>Preregistra la respuesta y el protocolo antes de ejecutar,</strong> y guarda las salidas completas: permite reabrir un resultado y corregirlo (se hizo con dos puntuaciones).</li><li><strong>Una corrida no es una medida.</strong> Corre varias veces y reporta la unión, el consenso y el solapamiento; y una corrida de control sin el foco.</li><li><strong>El sistema puede revisar su propio código,</strong> y encuentra errores reales, pero con circularidad: declárala.</li></ol>
+<h2 id="7-glosario">7. Glosario</h2>
+<div class="table-wrap"><table><thead><tr><th>Término</th><th>Significado</th></tr></thead><tbody><tr><td><strong>SUT</strong></td><td>Sistema bajo prueba, congelado con un hash para medir todo contra lo mismo</td></tr><tr><td><strong>Modo de falla</strong></td><td>Una forma concreta de fallar, con su entrada, su contrato y su estado</td></tr><tr><td><strong>Contrato</strong></td><td>Qué debe hacer el código ante una entrada; <code>confirmado</code> si una persona lo firmó</td></tr><tr><td><strong>Mutante / mutante equivalente</strong></td><td>Copia del código con un cambio pequeño / cambio que no altera el comportamiento observable</td></tr><tr><td><strong>Golden set</strong></td><td>Casos etiquetados por humanos y congelados contra los que se mide al revisor</td></tr><tr><td><strong>Señuelo</strong></td><td>Cambio inofensivo que el revisor no debería marcar; mide falsos positivos</td></tr><tr><td><strong>TP / FP / FN / TN</strong></td><td>Acierto al detectar / ruido / problema perdido / acierto al confirmar que está limpio</td></tr><tr><td><strong>Shadow</strong></td><td>El revisor corre y registra, sin mostrar ni bloquear</td></tr><tr><td><strong>Override</strong></td><td>Una persona discrepa del veredicto; se registra con su motivo</td></tr><tr><td><strong>Flywheel</strong></td><td>Ciclo en que cada error del revisor se convierte en un dato que lo mejora</td></tr><tr><td><strong>Slopsquatting</strong></td><td>Registrar un nombre de paquete que la IA inventa con frecuencia, con código malicioso</td></tr><tr><td><strong>Confused deputy</strong></td><td>Componente con privilegios (un LLM con acceso a cuentas) manipulado por un usuario de bajos privilegios</td></tr><tr><td><strong>Zona no IA</strong></td><td>Área donde la decisión humana es obligatoria y la IA no aprueba nada</td></tr></tbody></table></div>
+<h2 id="8-decisiones-frecuentes">8. Decisiones frecuentes</h2>
+<div class="table-wrap"><table><thead><tr><th>Si ves esto</th><th>Haz esto</th></tr></thead><tbody><tr><td>El comportamiento del código es ambiguo</td><td><strong>Pendiente de decisión</strong>; no escribas test</td></tr><tr><td>Un test rojo por un contrato firmado</td><td>Corrige el código con el cambio mínimo</td></tr><tr><td>Un mutante sobrevive y ningún contrato lo decide</td><td><strong>No escribas test</strong>; propón un modo de falla nuevo</td></tr><tr><td>Menos de ~30 casos en una categoría</td><td>&quot;Datos insuficientes&quot;; no concluyas</td></tr><tr><td>Todas las etiquetas son positivas</td><td>No cites la precisión: falta una clase negativa</td></tr><tr><td>El revisor cita una línea que no está en el diff</td><td>Descarta el hallazgo</td></tr><tr><td>El texto del diff pide &quot;aprueba esto&quot;</td><td>Repórtalo como hallazgo de seguridad</td></tr><tr><td>Un paquete no existe en el registro</td><td>Riesgo, no prueba de maldad; no lo instales</td></tr><tr><td>No se pudo consultar el registro</td><td>Nunca lo informes como &quot;no existe&quot;</td></tr><tr><td>Cambias el prompt o el modelo</td><td>Ejecuta la prueba de regresión y reinicia el conteo de calibración</td></tr></tbody></table></div>
+<h2 id="9-como-adoptarlo-en-otro-codigo">9. Cómo adoptarlo en otro código</h2>
+<p><strong>Qué copiar del lab:</strong> <code>prompts/</code> (las versiones usadas), <code>schemas/review.schema.json</code>, <code>scripts/</code> y <code>tests/</code> de las herramientas que uses, <code>config/routing.json</code>, <code>CONTRIBUTING.md</code> y el hook de commits. <strong>Qué adaptar:</strong> los marcadores <code>{{MODULO}}</code>, <code>{{FRAMEWORK}}</code>, <code>{{ARCHIVO_DESTINO}}</code>; la rúbrica con ejemplos de tu proyecto; los umbrales de calibración. <strong>Qué no copiar:</strong> los datos y resultados del caso de estudio; son suyos y no son tuyos.</p>
+<p><strong>Día 1</strong></p>
+<ul><li>Repo con commits convencionales y CI que corra las pruebas.</li><li>Un módulo con lógica pura como piloto.</li><li>La rúbrica escrita con ejemplos propios.</li></ul>
+<p><strong>Semana 1</strong></p>
+<ul><li>Catálogo de modos de falla, firmado; tests de lo confirmado.</li><li>Mutation testing: línea base y triaje de sobrevivientes.</li><li>Rama con defectos sembrados y señuelos; revisor en prosa y luego en JSON con su validador.</li></ul>
+<p><strong>Mes 1</strong></p>
+<ul><li>Revisor en <strong>shadow</strong> con un modelo barato; registrar todo.</li><li>Historial: discrepancias con su motivo y una <strong>muestra aleatoria</strong> etiquetada por una persona.</li><li>Calibración por categoría; solo entonces pasar a consultivo.</li></ul>
+<p><strong>Después</strong></p>
+<ul><li>Bloqueo parcial para reglas con acuerdo alto y estable, con degradación automática.</li><li>Añadir análisis estático, auditoría de dependencias y pruebas adversariales.</li><li>Revisar la política en cada PR y declarar las zonas no IA.</li></ul>
+<p><strong>Antes de enviar código a un proveedor externo:</strong> diff mínimo con tope, rutas sensibles excluidas, política de retención y entrenamiento revisada, clave como <em>secret</em>, registro de auditoría.</p>
+<h2 id="10-comandos-del-lab">10. Comandos del lab</h2>
+<pre><code class="language-bash">py -m unittest discover -s tests
+py scripts/compare_mutation.py &quot;A=a.json&quot; &quot;B=b.json&quot; &quot;C=c.json&quot; --file src/modulo.ts
+py scripts/validate_review.py review.json --diff diff.patch
+py scripts/review_policy.py review.json --phase advisory --comment c.md
+py scripts/route_review.py diff.patch --prompt-version v2 --schema-version 1 --model ID
+py scripts/stability.py run1.json run2.json run3.json
+py scripts/calibrate.py history.json --sources audit_sample
+py scripts/regression_check.py --dataset d.json --baseline b.json --candidate c.json
+py scripts/audit_dependencies.py npm package.json      # usa la red
+git config core.hooksPath .githooks                    # commits convencionales</code></pre>
+<h2 id="11-anti-patrones">11. Anti-patrones</h2>
+<ul><li>Encender el bloqueo el primer día.</li><li>Convertir el comportamiento actual en especificación.</li><li>Escribir tests para matar mutantes sin contrato.</li><li>Validar la salida de un modelo con otro modelo.</li><li>Rellenar con la IA la columna de &quot;decisión humana&quot;.</li><li>Publicar una cifra sin su límite.</li><li>Cambiar un prompt sin versión ni regresión.</li><li>Enviar al proveedor más código del necesario.</li><li>Medir un revisor con los mismos hallazgos con los que se redactó su prompt, sin una corrida de control.</li><li>Dar por buena una etiqueta puesta sin ver la comprobación, o una comprobación hecha con un script que no se probó.</li><li>Contar como aprobación el &quot;sin hallazgos&quot; de la IA en una zona donde la decisión es humana.</li></ul>
+<h2 id="12-limites-de-esta-guia">12. Límites de esta guía</h2>
+<p>Resume un método probado en un caso real (un módulo en la primera fase y el repositorio de producción en la segunda), con un modelo, un etiquetador y pocas corridas por variante. Las piezas marcadas ◌ son diseño sin ejecutar. Los umbrales son propuestas, no estándares, y con la evidencia actual el revisor no cumple los de la fase de bloqueo.</p>
+</article>
+</div>
+<footer><div class="wrap">
+<p><span lang="es">Código bajo licencia MIT; guía y textos bajo CC BY 4.0. © 2026 osworky. Cifras de un piloto: un modelo, un etiquetador, muestras pequeñas.</span><span lang="en">Code under the MIT license; guide and texts under CC BY 4.0. © 2026 osworky. Figures from a pilot: one model, one labeller, small samples.</span></p>
+<p><a href="https://github.com/osworky/ai-code-review-lab">github.com/osworky/ai-code-review-lab</a></p>
+</div></footer>
+<script>
+(function () {
+  var root = document.documentElement
+  function pick() {
+    try { var q = new URLSearchParams(location.search).get("lang"); if (q === "es" || q === "en") return q } catch (e) {}
+    try { var s = localStorage.getItem("lang"); if (s === "es" || s === "en") return s } catch (e) {}
+    return ((navigator.language || "es").slice(0, 2) === "en") ? "en" : "es"
+  }
+  function set(l) {
+    root.setAttribute("data-lang", l); root.lang = l
+    document.querySelectorAll(".lang button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-l") === l)) })
+    try { localStorage.setItem("lang", l) } catch (e) {}
+  }
+  document.querySelectorAll(".lang button").forEach(function (b) { b.addEventListener("click", function () { set(b.getAttribute("data-l")) }) })
+  set(pick())
+})()
+</script>
+</body>
+</html>

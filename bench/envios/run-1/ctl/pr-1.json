@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "findings": [
+    {
+      "rule_id": "boundary-condition-changed",
+      "category": "correctness",
+      "severity": "blocker",
+      "location": {
+        "file": "src/cotizar.ts",
+        "line": 5
+      },
+      "message": "El filtro pasó de `kg <= t.maxKg` a `kg < t.maxKg`. Un paquete que pesa exactamente maxKg deja de tener opción en esa tarifa, así que puede quedar sin cotización o con una tarifa más cara. Afecta al precio que ve el cliente y no hay test en el diff que justifique el cambio de contrato.",
+      "suggested_fix": "Restaurar `kg <= t.maxKg`, o si el cambio es intencional, documentarlo y añadir un test del caso límite."
+    },
+    {
+      "rule_id": "currency-not-normalized",
+      "category": "correctness",
+      "severity": "blocker",
+      "location": {
+        "file": "src/cotizar.ts",
+        "line": 15
+      },
+      "message": "masBarata ahora compara `t.precio` crudo en lugar de `enDolares(t)`. Si las tarifas están en monedas distintas, se elige la opción equivocada y el cliente ve un precio incorrecto. Además se borró del comentario la aclaración de comparar en la misma moneda.",
+      "suggested_fix": "Volver a comparar con `enDolares(t) < enDolares(mejor)` y restaurar el comentario."
+    },
+    {
+      "rule_id": "missing-tests-for-new-logic",
+      "category": "missing_tests",
+      "severity": "advisory",
+      "location": {
+        "file": "src/cotizar.ts",
+        "line": 21
+      },
+      "message": "Se añade el recargo frágil (15 % con mínimo de 2 USD) y un parámetro nuevo en cotizar, y cambian el límite de peso y el criterio de la opción más barata, sin ningún test en el diff.",
+      "suggested_fix": "Añadir tests en tests/ para el recargo (por debajo y por encima del mínimo), el peso exacto en el límite y la comparación entre monedas."
+    }
+  ]
+}
