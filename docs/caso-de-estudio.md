@@ -1,4 +1,4 @@
-# Caso de estudio: un sitio de cotización de traslados
+# Caso de estudio: Traslados Global VIP
 
 El método de `guia.md` se aplicó a una aplicación real: un sitio de cotización de traslados (Next.js, TypeScript, Vitest y Playwright). Este documento cuenta qué se hizo, qué resultó y cuánto vale cada resultado, en dos fases: un experimento controlado sobre un módulo (secciones 1 a 5) y la aplicación al repositorio de producción con un sistema de revisión que se midió (secciones 6 a 11).
 

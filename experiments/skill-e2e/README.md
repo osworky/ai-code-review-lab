@@ -1,6 +1,6 @@
 # Prueba de punta a punta de la skill `ai-code-review` sobre una copia del propio lab
 
-Fecha: 2026-10-22. Objetivo: comprobar que la skill funciona fuera del proyecto original, siguiendo `SKILL.md` al pie de la letra: `prepare`, un agente nuevo por bloque, `merge` (que registra en el ledger), etiquetar, `report`.
+Fecha: 2026-10-22. Objetivo: comprobar que la skill funciona fuera de Traslados, siguiendo `SKILL.md` al pie de la letra: `prepare`, un agente nuevo por bloque, `merge` (que registra en el ledger), etiquetar, `report`.
 
 ## Material
 Una copia local del propio lab con una rama `feat/demo-skill` y un cambio con **defectos plantados** (la respuesta conocida está abajo y se escribió antes de ejecutar a los agentes). El lab no tiene `.ai-review/context.md`: se revisa con la rúbrica genérica.
@@ -24,4 +24,4 @@ Infraestructura (`.github/workflows/deploy.yml`):
 Puntuación: recall = elementos que el hallazgo describe, con la línea del cambio. Los hallazgos fuera de la lista se etiquetan después (A, M o R) y alimentan el ledger.
 
 ## Límites
-Una corrida, un modelo, defectos plantados por quien escribió la skill (no independientes) y un repositorio donde las cifras del proyecto original no se aplican. Es una prueba de que el flujo funciona, no una medida de acierto.
+Una corrida, un modelo, defectos plantados por quien escribió la skill (no independientes) y un repositorio donde las cifras de Traslados no se aplican. Es una prueba de que el flujo funciona, no una medida de acierto.

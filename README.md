@@ -48,7 +48,7 @@ node bench/envios/check-citable.mjs ./envios-repo ./envios-repo.key.json
 - Nada sobre otros modelos ni otros etiquetadores.
 
 ## Origen y atribución
-El enfoque parte de un curso sobre IA aplicada a pruebas y revisión de código. Lo propio de este repositorio es la aplicación a un caso real (anonimizado), el registro de hallazgos, los bancos de pruebas, el experimento comparativo y las herramientas deterministas. El material del curso no se incluye. El caso real es un proyecto privado: aquí solo están sus cifras agregadas.
+El enfoque parte de un curso sobre IA aplicada a pruebas y revisión de código. Lo propio de este repositorio es la aplicación a un caso real (anonimizado), el registro de hallazgos, los bancos de pruebas, el experimento comparativo y las herramientas deterministas. El material del curso no se incluye. El caso real es **Traslados Global VIP**, un proyecto privado en producción: aquí están el método, la evidencia y sus cifras agregadas, sin su código, tarifas ni datos del negocio.
 
 ## Licencias
 - **Código:** [MIT](LICENSE) © 2026 osworky.

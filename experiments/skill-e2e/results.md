@@ -3,7 +3,7 @@
 Fecha: 2026-10-22. Protocolo y respuesta conocida en `README.md` (escritos antes de ejecutar a los agentes). Evidencia completa en `run/`: el plan, los diffs anotados, la salida de cada revisor, la revisión fusionada, el ledger y el informe.
 
 ## Qué se comprobó
-Que la skill funciona **fuera del proyecto original**, en una copia del propio lab, siguiendo `SKILL.md` paso a paso:
+Que la skill funciona **fuera de Traslados**, en una copia del propio lab, siguiendo `SKILL.md` paso a paso:
 1. `prepare` partió el cambio en dos bloques (`python` e `infra`) y numeró las líneas.
 2. Dos agentes nuevos y aislados, uno por bloque, con el prompt base, el foco del bloque, la rúbrica genérica y sin contexto de proyecto.
 3. `merge` validó los dos bloques (esquema, valores permitidos y líneas citadas dentro del diff), los fusionó y **registró 11 hallazgos en el ledger**.
@@ -39,7 +39,7 @@ Dos de los cuatro etiquetados son accionables y ninguno es ruido: son hallazgos 
 Con 10 filas etiquetadas dice **datos insuficientes** en todas las categorías (mínimo 30): precisión estricta 70 % (intervalo 40 a 89 %), amplia 100 % (72 a 100 %), ruido 0 %. El recall sobre el PR auditado sale 10 de 10, también como datos insuficientes. Los 7 defectos plantados se registraron con `--by answer-key` para distinguirlos de las etiquetas humanas.
 
 ## Lo que se aprendió
-- **La estructura portable funciona:** rutas en `.ai-review/`, contexto y configuración por proyecto, la skill sin nada del proyecto original.
+- **La estructura portable funciona:** rutas en `.ai-review/`, contexto y configuración por proyecto, la skill sin nada de Traslados.
 - **Un defecto de redacción del informe** apareció al leerlo ("Hallazgos reales del revisor 10 de 10 defectos conocidos") y se corrigió con su test.
 - **Un error de proceso mío:** al preparar la skill, un `git add -A` incluyó un enlace a `node_modules`; se detectó antes de confirmar, se deshizo y se añadió `node_modules/` al `.gitignore`.
 

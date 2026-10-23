@@ -8,7 +8,7 @@ Fecha de corte: 2026-10-22. El lab cubre el ciclo completo en estructura y en he
 | Método | `docs/guia.md` (conceptos e implementación), `docs/caso-de-estudio.md` (dos fases) | Escrito y actualizado |
 | Prompts usados y medidos | `failure-modes`, `tests-3-layers`, `fix-red-tests`, `mutation-triage`, `naive-tests`, `reviewer` v1 y v2 | ✔ Primera fase |
 | Prompts de borrador ya ejecutados | Red team, cadena de suministro, regla de Semgrep, auditoría y recorrido legacy, cuatro revisores y router, revisión diferencial, triaje de Semgrep, generador de política de calibración | ✔ Una corrida cada uno, con límites; siguen en un borrador de prompt (no publicado en esta versión) hasta repetirlos |
-| Prompts sin ejecutar | Auditoría de aplicaciones con LLM | ◌ Aplazado: el proyecto de ejemplo no usa ningún modelo; se hará sobre una aplicación que sí lo use |
+| Prompts sin ejecutar | Auditoría de aplicaciones con LLM | ◌ Aplazado: Traslados no usa ningún modelo; se hará sobre otro proyecto propio que sí use un modelo |
 | Herramientas con pruebas | `validate_review`, `compare_mutation`, `review_policy`, `calibrate`, `regression_check`, `check_commit_msg` | ✔ |
 | Herramientas que corrieron con datos reales | `audit_dependencies` (registro de npm, 61 dependencias) y los scripts de la evidencia privada del caso (termómetros, verificadores de citas, puntuación del piloto) | ✔ |
 | Herramientas aún sin datos reales | `route_review`, `stability`, `calibrate` | Probadas con datos simulados; ver "Qué falta" |
