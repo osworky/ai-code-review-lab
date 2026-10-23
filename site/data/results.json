@@ -378,6 +378,36 @@
       "n": 19
     }
   },
+  "testing": {
+    "project": {
+      "e2eFlows": 32,
+      "e2eAutomated": 27,
+      "playwrightTests": 140,
+      "playwrightRuns": 280,
+      "unitTests": 730,
+      "defectsFound": 6,
+      "defectsFixed": 4
+    },
+    "mutation": {
+      "before": 84.09,
+      "after": 95.17,
+      "contracts": 30
+    },
+    "redTeam": {
+      "tests": 46,
+      "detectDefect": 18,
+      "regressions": 0,
+      "realClosed": 13
+    },
+    "triage": {
+      "survivors": 144,
+      "contractWithoutTest": 36,
+      "newTests": 29,
+      "equivalent": 34,
+      "noContract": 71,
+      "failureModes": 7
+    }
+  },
   "policy": {
     "minRows": 30,
     "categories": 6,
