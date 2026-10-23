@@ -103,7 +103,7 @@ figure.chart svg { width: 100%; height: auto; display: block; }
 .svgwrap svg { min-width: 560px; }
 .legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 0.88rem; color: var(--text-2); margin: 4px 0 8px; }
 .legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -1px; margin-right: 6px; }
-.s1 { fill: var(--series-1); } .s2 { fill: var(--series-2); } .st1 { stroke: var(--series-1); } .l1 { background: var(--series-1); } .l2 { background: var(--series-2); }
+.s1 { fill: var(--series-1); } .s2 { fill: var(--series-2); } .st1 { stroke: var(--series-1); } .legend .l1 { background: var(--series-1); } .legend .l2 { background: var(--series-2); }
 svg .track { fill: var(--track); }
 svg .grid { stroke: var(--hair); stroke-width: 1; }
 svg .whisker { stroke-width: 2; stroke-linecap: round; }
