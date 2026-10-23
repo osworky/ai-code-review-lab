@@ -4,7 +4,7 @@
 
 Este repositorio es un laboratorio hecho desde QA para responder una pregunta concreta: *¿cuánto se puede confiar en la IA para probar y revisar código?* Las prácticas son fáciles de aprender e integrar **por niveles**: se puede empezar con una rúbrica y una guía, seguir con bancos de pruebas para medir, y llegar a una skill completa que revisa, valida y registra lo que decide una persona con cada hallazgo.
 
-**Vitrina (ES/EN):** <https://osworky.github.io/ai-code-review-lab/> · **Guía:** [`docs/guia.md`](docs/guia.md) · **Caso de estudio:** [`docs/caso-de-estudio.md`](docs/caso-de-estudio.md)
+**Vitrina (ES/EN):** <https://osworky.github.io/ai-code-review-lab/> · **Guía:** [`docs/guia.md`](docs/guia.md) · **Caso de estudio:** [`docs/caso-de-estudio.md`](docs/caso-de-estudio.md) · **English:** [guide](docs/en/guia.md), [case study](docs/en/caso-de-estudio.md), [roadmap](docs/en/roadmap.md)
 
 ## Qué hay, por niveles
 | Nivel | Carpeta | Qué es |

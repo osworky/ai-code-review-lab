@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://osworky.github.io/ai-code-review-lab/sitemap.xml
