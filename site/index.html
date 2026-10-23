@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ai-code-review-lab · Mide antes de confiar / Measure before you trust</title>
-<meta name="description" content="Cómo evaluar un revisor de código con IA, con datos y con sus límites. A skill, benchmarks and a guide. / How to evaluate an AI code reviewer, with data and with its limits.">
+<meta name="description" content="Buenas prácticas de testing y code review con IA, de la rúbrica a la skill completa, medidas con datos y con sus límites. / Good practices for testing and code review with AI, measured with data and with their limits.">
 <meta property="og:title" content="ai-code-review-lab · Mide antes de confiar / Measure before you trust">
-<meta property="og:description" content="Cómo evaluar un revisor de código con IA, con datos y con sus límites. A skill, benchmarks and a guide. / How to evaluate an AI code reviewer, with data and with its limits.">
+<meta property="og:description" content="Buenas prácticas de testing y code review con IA, de la rúbrica a la skill completa, medidas con datos y con sus límites. / Good practices for testing and code review with AI, measured with data and with their limits.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://osworky.github.io/ai-code-review-lab/">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232a78d6'/%3E%3Cpath d='M8 17l5 5 11-12' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231b7f79'/%3E%3Cpath d='M8 17l5 5 11-12' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
@@ -28,16 +28,16 @@
 <main class="wrap">
 <div class="hero">
 <h1>ai-code-review-lab</h1>
-<p class="tag"><span lang="es"><strong>Mide antes de confiar.</strong> Cómo evaluar un revisor de código con IA, con datos y con sus límites.</span><span lang="en"><strong>Measure before you trust.</strong> How to evaluate an AI code reviewer, with data and with its limits.</span></p>
+<p class="tag"><span lang="es"><strong>Mide antes de confiar.</strong> Buenas prácticas de testing y code review con IA, de la rúbrica a la skill completa, medidas con datos y con sus límites.</span><span lang="en"><strong>Measure before you trust.</strong> Good practices for testing and code review with AI, from a rubric to a full skill, measured with data and with their limits.</span></p>
 <div class="buttons"><a class="btn primary" href="https://github.com/osworky/ai-code-review-lab"><span lang="es">Ver el repositorio</span><span lang="en">View the repository</span></a><a class="btn" href="guia/"><span lang="es">Leer la guía</span><span lang="en">Read the guide</span></a><a class="btn" href="caso/"><span lang="es">Caso de estudio</span><span lang="en">Case study</span></a></div>
 </div>
 
 <section id="que-es"><h2><span lang="es">Qué es</span><span lang="en">What it is</span></h2>
-<p class="lead"><span lang="es">Un laboratorio para responder una pregunta concreta: <em>¿cuánto se puede confiar en un revisor de código con IA?</em> Todo lo que se afirma aquí viene con su muestra, su intervalo y lo que no se puede concluir.</span><span lang="en">A lab to answer one concrete question: <em>how far can you trust an AI code reviewer?</em> Everything claimed here comes with its sample, its interval and what cannot be concluded.</span></p>
+<p class="lead"><span lang="es">Un laboratorio hecho desde QA para responder una pregunta concreta: <em>¿cuánto se puede confiar en la IA para probar y revisar código?</em> Las prácticas se aprenden y se integran por niveles, y todo lo que se afirma viene con su muestra, su intervalo y lo que no se puede concluir.</span><span lang="en">A lab built from QA to answer one concrete question: <em>how far can you trust AI to test and review code?</em> The practices are learned and integrated in levels, and everything claimed here comes with its sample, its interval and what cannot be concluded.</span></p>
 <div class="cards">
-<div class="card"><h3><span lang="es">Una skill</span><span lang="en">A skill</span></h3><p><span lang="es">Para Claude Code: revisa por tipo de archivo, valida con un script lo que devuelve el modelo y registra qué decide una persona con cada hallazgo.</span><span lang="en">For Claude Code: it reviews by file type, validates the model output with a script and records what a person decides about each finding.</span></p></div>
-<div class="card"><h3><span lang="es">Bancos de pruebas</span><span lang="en">Benchmarks</span></h3><p><span lang="es">Módulos ficticios con defectos plantados y respuesta conocida, y una puntuación automática, sin juicio humano.</span><span lang="en">Fictional modules with planted defects and a known answer, scored automatically with no human judgement.</span></p></div>
-<div class="card"><h3><span lang="es">Una guía</span><span lang="en">A guide</span></h3><p><span lang="es">La rúbrica, el registro de hallazgos, cómo se arma un banco y cómo se decide una fase de despliegue.</span><span lang="en">The rubric, the findings ledger, how a benchmark is built and how a rollout phase is decided.</span></p></div>
+<div class="card"><h3><span lang="es">Nivel 1 · Rúbrica y guía</span><span lang="en">Level 1 · Rubric and guide</span></h3><p><span lang="es">Criterios de revisión, catálogo de modos de falla y cómo se decide una fase de despliegue. Se aplica sin instalar nada.</span><span lang="en">Review criteria, a catalogue of failure modes and how a rollout phase is decided. It applies without installing anything.</span></p></div>
+<div class="card"><h3><span lang="es">Nivel 2 · Medir</span><span lang="en">Level 2 · Measure</span></h3><p><span lang="es">Bancos de pruebas con defectos plantados y respuesta conocida, puntuados sin juicio humano, e intervalos de Wilson para saber cuánto vale cada cifra.</span><span lang="en">Benchmarks with planted defects and a known answer, scored with no human judgement, and Wilson intervals to know what each figure is worth.</span></p></div>
+<div class="card"><h3><span lang="es">Nivel 3 · La skill completa</span><span lang="en">Level 3 · The full skill</span></h3><p><span lang="es">Para Claude Code: revisa por tipo de archivo, valida con un script lo que devuelve el modelo y registra qué decide una persona con cada hallazgo.</span><span lang="en">For Claude Code: it reviews by file type, validates the model output with a script and records what a person decides about each finding.</span></p></div>
 </div></section>
 
 <section id="resultados"><h2><span lang="es">Resultados</span><span lang="en">Results</span></h2>

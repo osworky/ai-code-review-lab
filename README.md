@@ -1,21 +1,20 @@
 # ai-code-review-lab
 
-> **Mide antes de confiar.** Cómo evaluar un revisor de código con IA con datos, con sus intervalos y con sus límites.
+> **Mide antes de confiar.** Buenas prácticas de testing y code review con IA, de la rúbrica a la skill completa, medidas con datos, con sus intervalos y con sus límites.
 
-Este repositorio es un laboratorio para responder una pregunta concreta: *¿cuánto se puede confiar en un revisor de código con IA?* Reúne una **skill de Claude Code** que revisa y registra lo que decide una persona con cada hallazgo, **bancos de pruebas ficticios** con defectos plantados y respuesta conocida, las **herramientas** para medir y la **guía** de cómo se hizo.
+Este repositorio es un laboratorio hecho desde QA para responder una pregunta concreta: *¿cuánto se puede confiar en la IA para probar y revisar código?* Las prácticas son fáciles de aprender e integrar **por niveles**: se puede empezar con una rúbrica y una guía, seguir con bancos de pruebas para medir, y llegar a una skill completa que revisa, valida y registra lo que decide una persona con cada hallazgo.
 
 **Vitrina (ES/EN):** <https://osworky.github.io/ai-code-review-lab/> · **Guía:** [`docs/guia.md`](docs/guia.md) · **Caso de estudio:** [`docs/caso-de-estudio.md`](docs/caso-de-estudio.md)
 
-## Qué hay
-| Carpeta | Qué es |
-|---|---|
-| [`skills/ai-code-review/`](skills/ai-code-review/) | La skill: revisores por tipo de archivo, validación determinista de lo que devuelven, y un registro (*ledger*) con la decisión humana sobre cada hallazgo. 168 tests |
-| [`bench/envios/`](bench/envios/) | Banco v1: un módulo ficticio con 18 defectos plantados, **ya ejecutado** |
-| [`bench/envios-v2/`](bench/envios-v2/) | Banco v2, más difícil: **construido, resultados pendientes** |
-| [`scripts/`](scripts/) y [`tests/`](tests/) | Herramientas en Python: validador del revisor, comparador de mutantes, calibración, regresión, estabilidad |
-| [`docs/`](docs/) | La guía, el caso de estudio y el roadmap |
-| [`design/`](design/), [`prompts/`](prompts/), [`rubric/`](rubric/), [`schemas/`](schemas/) | Diseños, prompts versionados, rúbrica y esquema de salida |
-| [`experiments/skill-e2e/`](experiments/skill-e2e/) | La skill probada de punta a punta sobre otro repositorio |
+## Qué hay, por niveles
+| Nivel | Carpeta | Qué es |
+|---|---|---|
+| 1 · Rúbrica y guía | [`docs/`](docs/), [`rubric/`](rubric/), [`prompts/`](prompts/), [`design/`](design/) | La guía, el caso de estudio y el roadmap; la rúbrica de revisión, los prompts versionados y los diseños. Se aplican sin instalar nada |
+| 2 · Medir | [`bench/envios/`](bench/envios/) | Banco v1: un módulo ficticio con 18 defectos plantados, **ya ejecutado** |
+| 2 · Medir | [`bench/envios-v2/`](bench/envios-v2/) | Banco v2, más difícil: **construido, resultados pendientes** |
+| 2 · Medir | [`scripts/`](scripts/) y [`tests/`](tests/) | Herramientas en Python: validador del revisor, comparador de mutantes, calibración, regresión, estabilidad |
+| 3 · La skill completa | [`skills/ai-code-review/`](skills/ai-code-review/) | Para Claude Code: revisores por tipo de archivo, validación determinista de lo que devuelven y un registro (*ledger*) con la decisión humana sobre cada hallazgo. 168 tests |
+| 3 · La skill completa | [`experiments/skill-e2e/`](experiments/skill-e2e/) | La skill probada de punta a punta sobre una copia del propio lab |
 
 ## Lo que se midió (piloto)
 Un modelo, un solo etiquetador y muestras pequeñas: son cifras de un **piloto**, no una calibración. Los datos viven en [`site/data/results.json`](site/data/results.json) y de ahí salen todas las cifras de este documento y de la vitrina.
