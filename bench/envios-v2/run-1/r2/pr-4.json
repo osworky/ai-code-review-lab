@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "findings": [
+    {
+      "rule_id": "pull-request-target-untrusted-checkout",
+      "category": "security",
+      "severity": "blocker",
+      "location": {
+        "file": ".github/workflows/preview.yml",
+        "line": 18
+      },
+      "message": "El workflow se dispara con pull_request_target (corre con secretos y token con permiso de escritura) y hace checkout del SHA del head del PR, es decir, código del fork. Después ejecuta npm ci, npm run build y npm test sobre ese código, de modo que cualquier autor de un PR puede ejecutar scripts arbitrarios (postinstall, build, tests), leer PREVIEW_TOKEN (expuesto como env en el paso de build, línea 25) y usar el GITHUB_TOKEN con pull-requests: write.",
+      "suggested_fix": "Usar el evento pull_request (sin secretos para forks) para construir y probar el código del PR. Si se necesita el secreto, separar en dos workflows (build sin secretos y un segundo con workflow_run que solo publique artefactos ya construidos) o exigir aprobación manual con un environment protegido; no hacer checkout del head del PR bajo pull_request_target."
+    },
+    {
+      "rule_id": "shell-command-injection",
+      "category": "security",
+      "severity": "blocker",
+      "location": {
+        "file": "scripts/comprimir_tarifas.py",
+        "line": 26
+      },
+      "message": "El nombre del archivo viene de argv y se interpola en un comando que se ejecuta con shell=True. Un nombre con espacios o metacaracteres (por ejemplo `x.csv; rm -rf ~`) ejecuta comandos arbitrarios. Además no se valida que el archivo quede dentro de data/: `../` o rutas absolutas permiten comprimir archivos fuera de la carpeta (el script de importación sí lo restringe con resolve()).",
+      "suggested_fix": "Evitar el shell: subprocess.run([\"gzip\", \"-k\", \"--\", str(ruta)], check=True), o usar el módulo gzip de la biblioteca estándar. Resolver DATA_DIR / nombre y comprobar que sigue dentro de DATA_DIR antes de comprimir."
+    },
+    {
+      "rule_id": "unpinned-action-version",
+      "category": "security",
+      "severity": "info",
+      "location": {
+        "file": ".github/workflows/preview.yml",
+        "line": 16
+      },
+      "message": "Las acciones actions/checkout y actions/setup-node se referencian por etiqueta móvil (@v4) y no por SHA de commit. Al ser acciones oficiales de GitHub el riesgo es bajo, pero en un workflow con secretos conviene fijar la versión.",
+      "suggested_fix": "Fijar ambas acciones al SHA completo del commit (con comentario de la versión) y mantenerlas actualizadas con Dependabot."
+    },
+    {
+      "rule_id": "missing-script-tests",
+      "category": "missing_tests",
+      "severity": "info",
+      "location": {
+        "file": "scripts/comprimir_tarifas.py",
+        "line": 24
+      },
+      "message": "El script nuevo no trae pruebas en el diff: ni para comprimir (nombre inexistente, nombres con caracteres especiales o fuera de data/) ni para tamano_legible en los límites 1024 B y 1 MB. Si ya existen en otro archivo, no aparecen en el diff.",
+      "suggested_fix": "Añadir tests en tests/ para tamano_legible y para el rechazo de nombres fuera de data/ o con metacaracteres."
+    }
+  ]
+}

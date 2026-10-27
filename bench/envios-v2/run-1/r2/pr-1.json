@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "findings": [
+    {
+      "rule_id": "discount-threshold-off-by-one",
+      "category": "correctness",
+      "severity": "blocker",
+      "location": {
+        "file": "src/paquetes.ts",
+        "line": 6
+      },
+      "message": "El comentario documenta 10 % desde 5 (inclusive) y 20 % desde 20 (inclusive), pero el código usa `>` en lugar de `>=`. Un lote de exactamente 5 paquetes no recibe descuento y uno de exactamente 20 recibe 10 % en vez de 20 %. Afecta al dinero que ve el cliente.",
+      "suggested_fix": "Usar `cantidad >= 20` y `cantidad >= 5` en las dos comparaciones (líneas 6 y 7)."
+    },
+    {
+      "rule_id": "sort-ignores-currency",
+      "category": "correctness",
+      "severity": "blocker",
+      "location": {
+        "file": "src/paquetes.ts",
+        "line": 13
+      },
+      "message": "ordenarPorCosto ordena por `precio` bruto sin convertir a dólares, aunque `masBarata` en cotizar.ts compara con `enDolares` precisamente para no mezclar monedas. Si hay tarifas en monedas distintas, mejorOpcion puede elegir una opción más cara y cotizarLote cobrará un subtotal incorrecto. El test de ordenarPorCosto solo usa la zona local, así que no lo detecta.",
+      "suggested_fix": "Ordenar con `enDolares(a) - enDolares(b)` o reutilizar `masBarata` para elegir la mejor opción."
+    },
+    {
+      "rule_id": "silent-skip-unquotable-line",
+      "category": "correctness",
+      "severity": "advisory",
+      "location": {
+        "file": "src/paquetes.ts",
+        "line": 35
+      },
+      "message": "Si una línea no tiene ninguna tarifa que cubra su peso, se omite sin aviso del subtotal, pero `lineas.length` sigue contando ese paquete para `cantidad` y el descuento. El cliente ve un total más bajo sin saber que un paquete no se cotizó, y puede recibir un descuento por paquetes que no cobró.",
+      "suggested_fix": "Devolver o lanzar un error (o listar las líneas sin cotizar) y calcular cantidad y descuento solo con las líneas cotizadas."
+    },
+    {
+      "rule_id": "missing-boundary-tests",
+      "category": "missing_tests",
+      "severity": "advisory",
+      "location": {
+        "file": "tests/paquetes.test.ts",
+        "line": 6
+      },
+      "message": "Los tests de descuentoPorCantidad solo cubren 1 y 40, no los umbrales documentados (5 y 20), por eso no detectan el error de `>` frente a `>=`. Tampoco hay test de ordenamiento con monedas distintas, de cotizarLote con descuento aplicado ni de resumenLote.",
+      "suggested_fix": "Añadir casos para 4, 5, 19 y 20 paquetes, una prueba de orden con tarifas en distinta moneda y pruebas de cotizarLote con descuento y de resumenLote."
+    }
+  ]
+}

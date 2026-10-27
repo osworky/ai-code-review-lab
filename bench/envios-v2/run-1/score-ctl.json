@@ -1,0 +1,230 @@
+{
+  "findings": 18,
+  "recall": {
+    "hits": 11,
+    "of": 12
+  },
+  "byCategory": {
+    "correctness": {
+      "hits": 5,
+      "of": 5
+    },
+    "missing_tests": {
+      "hits": 0,
+      "of": 1
+    },
+    "performance": {
+      "hits": 1,
+      "of": 1
+    },
+    "security": {
+      "hits": 5,
+      "of": 5
+    }
+  },
+  "byOrigin": {
+    "real": {
+      "hits": 5,
+      "of": 6
+    },
+    "invented": {
+      "hits": 6,
+      "of": 6
+    }
+  },
+  "byKind": {
+    "commission": {
+      "hits": 8,
+      "of": 8
+    },
+    "omission": {
+      "hits": 3,
+      "of": 4
+    }
+  },
+  "decoyAlarms": {
+    "alarms": 1,
+    "of": 8
+  },
+  "excess": 4,
+  "missed": [
+    "E03"
+  ],
+  "perDefect": [
+    {
+      "id": "E01",
+      "pr": 1,
+      "category": "correctness",
+      "origin": "real",
+      "kind": "commission",
+      "hit": true,
+      "by": [
+        "currency-ignored-in-comparison"
+      ]
+    },
+    {
+      "id": "E02",
+      "pr": 1,
+      "category": "correctness",
+      "origin": "invented",
+      "kind": "commission",
+      "hit": true,
+      "by": [
+        "off-by-one-boundary"
+      ]
+    },
+    {
+      "id": "E03",
+      "pr": 1,
+      "category": "missing_tests",
+      "origin": "real",
+      "kind": "omission",
+      "hit": false,
+      "by": []
+    },
+    {
+      "id": "E04",
+      "pr": 1,
+      "category": "correctness",
+      "origin": "invented",
+      "kind": "omission",
+      "hit": true,
+      "by": [
+        "silent-skip-uncovered-line"
+      ]
+    },
+    {
+      "id": "E05",
+      "pr": 2,
+      "category": "correctness",
+      "origin": "real",
+      "kind": "commission",
+      "hit": true,
+      "by": [
+        "utc-date-instead-of-client-calendar"
+      ]
+    },
+    {
+      "id": "E06",
+      "pr": 2,
+      "category": "correctness",
+      "origin": "invented",
+      "kind": "commission",
+      "hit": true,
+      "by": [
+        "mutates-input-argument"
+      ]
+    },
+    {
+      "id": "E07",
+      "pr": 2,
+      "category": "performance",
+      "origin": "invented",
+      "kind": "commission",
+      "hit": true,
+      "by": [
+        "set-rebuilt-on-every-call"
+      ]
+    },
+    {
+      "id": "E08",
+      "pr": 3,
+      "category": "security",
+      "origin": "real",
+      "kind": "omission",
+      "hit": true,
+      "by": [
+        "inconsistent-text-validation"
+      ]
+    },
+    {
+      "id": "E09",
+      "pr": 3,
+      "category": "security",
+      "origin": "real",
+      "kind": "omission",
+      "hit": true,
+      "by": [
+        "unbounded-request-body",
+        "undocumented-endpoint"
+      ]
+    },
+    {
+      "id": "E10",
+      "pr": 3,
+      "category": "security",
+      "origin": "invented",
+      "kind": "commission",
+      "hit": true,
+      "by": [
+        "input-reflected-in-error"
+      ]
+    },
+    {
+      "id": "E11",
+      "pr": 4,
+      "category": "security",
+      "origin": "real",
+      "kind": "commission",
+      "hit": true,
+      "by": [
+        "pwn-request-untrusted-checkout"
+      ]
+    },
+    {
+      "id": "E12",
+      "pr": 4,
+      "category": "security",
+      "origin": "invented",
+      "kind": "commission",
+      "hit": true,
+      "by": [
+        "shell-command-injection",
+        "missing-tests-new-script"
+      ]
+    }
+  ],
+  "decoyDetail": [
+    {
+      "decoy": "T08",
+      "pr": 4,
+      "rule_id": "unsorted-imports",
+      "severity": "info",
+      "at": "scripts/importar_tarifas.py:9"
+    }
+  ],
+  "excessDetail": [
+    {
+      "pr": 1,
+      "rule_id": "missing-boundary-and-currency-tests",
+      "category": "missing_tests",
+      "severity": "advisory",
+      "at": "tests/paquetes.test.ts:11",
+      "message": "Los tests de descuentoPorCantidad solo cubren 1 y 40, no los umbrales 5 y 20 ni los valores contiguos, justo donde está el error de límites. Tampoco hay test de ordenarPorCosto con monedas mixtas ni d"
+    },
+    {
+      "pr": 2,
+      "rule_id": "missing-tests-for-new-logic",
+      "category": "missing_tests",
+      "severity": "advisory",
+      "at": "src/entrega.ts:11",
+      "message": "hoyIso y pedidoVigente no tienen tests. Tampoco hay casos de fechaDeEntrega con dias = 0 ni con fecha de inicio en fin de semana o feriado, ni de diasHabilesEntre que cruce un feriado. Son los casos l"
+    },
+    {
+      "pr": 2,
+      "rule_id": "hardcoded-holidays-single-year",
+      "category": "correctness",
+      "severity": "info",
+      "at": "src/entrega.ts:3",
+      "message": "La lista de feriados solo cubre 2026. Para fechas de 2027 en adelante no se saltará ningún feriado y las fechas de entrega serán erróneas sin ningún aviso."
+    },
+    {
+      "pr": 3,
+      "rule_id": "missing-validation-tests",
+      "category": "missing_tests",
+      "severity": "advisory",
+      "at": "tests/api-lotes.test.ts:23",
+      "message": "Las pruebas nuevas no cubren varias ramas de la validación de seguridad: etiqueta con caracteres de control o más de 200 caracteres, `nota` no string, el contenido exacto del mensaje de error de etiqu"
+    }
+  ]
+}

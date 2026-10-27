@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "findings": [
+    {
+      "rule_id": "pwn-request-untrusted-checkout",
+      "category": "security",
+      "severity": "blocker",
+      "location": {
+        "file": ".github/workflows/preview.yml",
+        "line": 18
+      },
+      "message": "El workflow se dispara con pull_request_target (corre con el contexto y los secretos del repo base y token con pull-requests: write) y hace checkout del commit del PR (head.sha), controlado por quien abre el PR, incluso desde un fork. Luego ejecuta npm ci, npm run build y npm test, es decir, código y scripts del PR (postinstall, build, tests), con acceso a secrets.PREVIEW_TOKEN (línea 25) y a un GITHUB_TOKEN con permisos de escritura. Un PR malicioso puede exfiltrar el secreto o abusar del token.",
+      "suggested_fix": "Usar el evento pull_request (sin secretos para forks), o no hacer checkout del código del PR en un job con pull_request_target. Si se necesita el secreto, separar en dos workflows (build sin secretos con pull_request y un workflow_run que solo use artefactos) o exigir aprobación manual con un environment protegido; no pasar PREVIEW_TOKEN a pasos que ejecutan código del PR."
+    },
+    {
+      "rule_id": "shell-command-injection",
+      "category": "security",
+      "severity": "blocker",
+      "location": {
+        "file": "scripts/comprimir_tarifas.py",
+        "line": 26
+      },
+      "message": "El nombre de archivo recibido por argumento (argv[1]) se interpola en una cadena que se ejecuta con shell=True. Un nombre con espacios o metacaracteres del shell (por ejemplo 'a.csv; rm -rf ~') ejecuta comandos arbitrarios. Además no se valida que el archivo quede dentro de data/ (un nombre como '../secreto' sale del directorio), a diferencia del script de importación, que resuelve la ruta contra DATA_DIR.",
+      "suggested_fix": "Llamar sin shell y con lista de argumentos: subprocess.run(['gzip', '-k', '--', str(ruta)], check=True), y resolver la ruta con (DATA_DIR / nombre).resolve() comprobando que sigue dentro de DATA_DIR antes de comprimir."
+    },
+    {
+      "rule_id": "missing-tests-new-script",
+      "category": "missing_tests",
+      "severity": "advisory",
+      "location": {
+        "file": "scripts/comprimir_tarifas.py",
+        "line": 24
+      },
+      "message": "El script nuevo añade lógica (comprimir, tamano_legible, main con validación de argumentos) y el diff no incluye ningún test, ni para los límites de tamano_legible (1023/1024 bytes, 1 MB) ni para nombres de archivo inválidos o fuera de data/.",
+      "suggested_fix": "Añadir tests en tests/ para tamano_legible en sus límites, para el uso con argumentos incorrectos y para el rechazo de nombres con metacaracteres o rutas fuera de data/."
+    },
+    {
+      "rule_id": "unsorted-imports",
+      "category": "style",
+      "severity": "info",
+      "location": {
+        "file": "scripts/importar_tarifas.py",
+        "line": 9
+      },
+      "message": "El cambio deja los imports de la biblioteca estándar fuera de orden alfabético ('sys' antes de 'csv'), lo que contradice la convención habitual (isort/PEP 8) y el orden que usa el otro script del diff. Es un cambio sin efecto funcional que solo añade ruido.",
+      "suggested_fix": "Restaurar el orden original: import csv antes de import sys."
+    }
+  ]
+}

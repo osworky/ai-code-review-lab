@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "findings": [
+    {
+      "rule_id": "utc-date-instead-of-local",
+      "category": "correctness",
+      "severity": "blocker",
+      "location": {
+        "file": "src/entrega.ts",
+        "line": 7
+      },
+      "message": "hoyIso documenta devolver la fecha de hoy en el calendario del cliente, pero usa toISOString(), que es UTC. En la tarde o noche de zonas con offset negativo (por ejemplo América) devuelve ya el día siguiente, y pedidoVigente (que la usa) marca como vencido un pedido de hoy. Rompe el contrato documentado y las fechas de entrega son una zona sensible del proyecto.",
+      "suggested_fix": "Construir AAAA-MM-DD con getFullYear(), getMonth() y getDate() (hora local del cliente) o recibir la zona horaria explícitamente."
+    },
+    {
+      "rule_id": "hardcoded-holidays-single-year",
+      "category": "correctness",
+      "severity": "advisory",
+      "location": {
+        "file": "src/entrega.ts",
+        "line": 3
+      },
+      "message": "La lista de feriados solo cubre 2026. Desde 2027 ninguna fecha se trata como feriado y las fechas de entrega calculadas serán incorrectas sin ningún error visible.",
+      "suggested_fix": "Cargar los feriados por año desde una fuente de datos o configuración, o fallar de forma explícita cuando la fecha esté fuera del rango cubierto."
+    },
+    {
+      "rule_id": "missing-tests-new-functions",
+      "category": "missing_tests",
+      "severity": "advisory",
+      "location": {
+        "file": "src/entrega.ts",
+        "line": 12
+      },
+      "message": "hoyIso y pedidoVigente son exportadas y no tienen test en el diff (tests/entrega.test.ts solo cubre fechaDeEntrega, primerDiaHabil y diasHabilesEntre). Un test cerca de medianoche habría detectado el problema de zona horaria. Tampoco hay test de diasHabilesEntre con un feriado ni de fechaDeEntrega con dias = 0.",
+      "suggested_fix": "Añadir tests de pedidoVigente (hoy, ayer, mañana y una hora cercana a medianoche) y de diasHabilesEntre que cruce un feriado."
+    },
+    {
+      "rule_id": "mutates-input-date",
+      "category": "correctness",
+      "severity": "advisory",
+      "location": {
+        "file": "src/entrega.ts",
+        "line": 28
+      },
+      "message": "primerDiaHabil es una función exportada que modifica con setUTCDate el Date que recibe y además lo devuelve. Quien la llame con una fecha propia la verá cambiada sin aviso (el test de primerDiaHabil solo prueba un día ya hábil, así que no lo detecta).",
+      "suggested_fix": "Trabajar sobre una copia (const actual = new Date(desde)) y devolverla, o documentar explícitamente que muta el argumento."
+    },
+    {
+      "rule_id": "unbounded-loop-on-input",
+      "category": "performance",
+      "severity": "advisory",
+      "location": {
+        "file": "src/entrega.ts",
+        "line": 39
+      },
+      "message": "fechaDeEntrega valida que dias sea entero no negativo pero no pone un máximo; un valor muy grande (p. ej. de una entrada externa) ejecuta un bucle de ese tamaño, cada vuelta con otro bucle y una validación de feriados. Es un posible bloqueo del proceso. No se ve en el diff de dónde viene dias.",
+      "suggested_fix": "Poner un tope razonable a dias (por ejemplo 365) y devolver null si lo supera."
+    },
+    {
+      "rule_id": "set-rebuilt-per-call",
+      "category": "performance",
+      "severity": "info",
+      "location": {
+        "file": "src/entrega.ts",
+        "line": 16
+      },
+      "message": "esFeriado construye un Set nuevo en cada llamada, y se llama una vez por día dentro de los bucles de fechaDeEntrega y diasHabilesEntre.",
+      "suggested_fix": "Mover el Set a una constante de módulo (const FERIADOS_SET = new Set(FERIADOS))."
+    }
+  ]
+}

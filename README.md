@@ -11,7 +11,7 @@ Este repositorio es un laboratorio hecho desde QA para responder una pregunta co
 |---|---|---|
 | 1 · Rúbrica y guía | [`docs/`](docs/), [`rubric/`](rubric/), [`prompts/`](prompts/), [`design/`](design/) | La guía, el caso de estudio y el roadmap; la rúbrica de revisión, los prompts versionados y los diseños. Se aplican sin instalar nada |
 | 2 · Medir | [`bench/envios/`](bench/envios/) | Banco v1: un módulo ficticio con 18 defectos plantados, **ya ejecutado** |
-| 2 · Medir | [`bench/envios-v2/`](bench/envios-v2/) | Banco v2, más difícil: **construido, resultados pendientes** |
+| 2 · Medir | [`bench/envios-v2/`](bench/envios-v2/) | Banco v2, más difícil: **ejecutado, tampoco distingue** |
 | 2 · Medir | [`scripts/`](scripts/) y [`tests/`](tests/) | Herramientas en Python: validador del revisor, comparador de mutantes, calibración, regresión, estabilidad |
 | 3 · La skill completa | [`skills/ai-code-review/`](skills/ai-code-review/) | Para Claude Code: revisores por tipo de archivo, validación determinista de lo que devuelven y un registro (*ledger*) con la decisión humana sobre cada hallazgo. 168 tests |
 | 3 · La skill completa | [`experiments/skill-e2e/`](experiments/skill-e2e/) | La skill probada de punta a punta sobre una copia del propio lab |
@@ -22,6 +22,7 @@ Un modelo, un solo etiquetador y muestras pequeñas: son cifras de un **piloto**
 - **Precisión** sobre 63 hallazgos etiquetados como *real y accionable* (A), *real pero menor* (M) o *ruido* (R): **40 %** accionables, **79 %** accionables o menores (intervalo de 68 a 88 %) y **21 %** de ruido. Son hallazgos que el revisor levantó, no una muestra aleatoria.
 - **Recall** en un piloto con tres casos de respuesta conocida: de **0 de 5** (una API, donde los defectos eran omisiones que solo encuentran pruebas adversariales) a **6 de 11** (un formulario) con tres corridas; el solapamiento entre corridas del mismo caso fue de 0,26 a 0,59.
 - **Banco v1:** **18 de 18** defectos con el proceso completo y también **sin el foco** de cada tipo de archivo, y 0 falsas alarmas en 6 cambios inofensivos. Es un **efecto techo**: el banco era demasiado fácil y no distingue nada. Por eso existe el banco v2.
+- **Banco v2** (4 PR, 12 defectos, 8 cambios inofensivos): **11 de 12**, **11 de 12** y **10 de 12** en tres corridas, y **11 de 12 sin el foco**. **Tampoco distingue**: el control iguala al proceso completo y el solapamiento entre corridas fue de 0,89 a 1,0. Un defecto contado como no visto es un artefacto de puntuación (las cuatro revisiones lo mencionan, pero citan el archivo de tests y no el código); se publica el resultado estricto y no se cambió la regla después. Los 6 temas de exceso están pendientes de etiqueta humana. Lo difícil queda en el piloto sobre código real.
 - **Política de calibración** generada con estos datos: **ninguna** de las 6 categorías llega al mínimo de 30 filas, así que no hay base para subir el revisor más allá de la fase consultiva.
 
 ## Pruébalo

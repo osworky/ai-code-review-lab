@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "findings": [
+    {
+      "rule_id": "unsafe-input-reflected",
+      "category": "security",
+      "severity": "blocker",
+      "location": {
+        "file": "src/api-lotes.ts",
+        "line": 28
+      },
+      "message": "Cuando la etiqueta no pasa textoSeguro (justo por tener caracteres de control, saltos de línea o marcas HTML), el mensaje de error la devuelve tal cual en la respuesta 422. Esto refleja en una ruta pública sin sesión precisamente el contenido que el propio archivo (línea 6) dice que no debe llegar al registro ni al reporte: permite inyección en logs y XSS reflejado si el error se muestra o se registra.",
+      "suggested_fix": "No incluir el valor recibido en el error: devolver solo `evento ${indice}: etiqueta invalida`."
+    },
+    {
+      "rule_id": "incomplete-input-validation",
+      "category": "correctness",
+      "severity": "advisory",
+      "location": {
+        "file": "src/api-lotes.ts",
+        "line": 30
+      },
+      "message": "La nota solo se comprueba como string: no se le aplica el límite de longitud ni el filtro de caracteres de control y marcas HTML que sí se aplican a la etiqueta. Un campo de texto libre de una API pública queda sin la barrera que el mismo archivo define para la etiqueta.",
+      "suggested_fix": "Validar la nota con textoSeguro (o con un límite propio documentado) igual que la etiqueta, y no reflejar su valor en errores."
+    },
+    {
+      "rule_id": "undocumented-public-endpoint",
+      "category": "documentation",
+      "severity": "advisory",
+      "location": {
+        "file": "src/api-lotes.ts",
+        "line": 40
+      },
+      "message": "Se añade el endpoint público POST /eventos/lote (límites de 50 eventos, 200 caracteres, códigos 400/422) y en el diff no cambia docs/api.md, que según el contexto describe el contrato de la API.",
+      "suggested_fix": "Documentar en docs/api.md el endpoint, sus límites y los códigos de respuesta."
+    },
+    {
+      "rule_id": "unbounded-request-body",
+      "category": "security",
+      "severity": "advisory",
+      "location": {
+        "file": "src/api-lotes.ts",
+        "line": 43
+      },
+      "message": "El texto del cuerpo se pasa a JSON.parse sin comprobar su tamaño antes; el límite de 50 eventos solo se aplica después de parsear, por lo que un cuerpo enorme se procesa completo. Además el parámetro `encabezados` no se usa. Si el límite de tamaño lo impone otra capa, no se ve en el diff.",
+      "suggested_fix": "Rechazar con un estado de tamaño excedido (p. ej. 413) si `texto.length` supera un máximo antes de parsear, y quitar o usar el parámetro `encabezados`."
+    },
+    {
+      "rule_id": "missing-test-coverage",
+      "category": "missing_tests",
+      "severity": "advisory",
+      "location": {
+        "file": "tests/api-lotes.test.ts",
+        "line": 23
+      },
+      "message": "Los tests no cubren: etiqueta con caracteres de control o más de 200 caracteres, el tipo de la nota (no string), un payload inválido dentro de un evento del lote, ni que el mensaje de error no refleje el valor de la etiqueta. La rama de rechazo por etiqueta solo se prueba con marcas HTML.",
+      "suggested_fix": "Añadir tests para etiqueta con salto de línea, etiqueta de 201 caracteres, nota numérica, payload con clave reservada y comprobar que el error no contiene el valor enviado."
+    }
+  ]
+}

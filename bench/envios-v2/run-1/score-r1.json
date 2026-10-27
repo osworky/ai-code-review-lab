@@ -1,0 +1,230 @@
+{
+  "findings": 18,
+  "recall": {
+    "hits": 11,
+    "of": 12
+  },
+  "byCategory": {
+    "correctness": {
+      "hits": 5,
+      "of": 5
+    },
+    "missing_tests": {
+      "hits": 0,
+      "of": 1
+    },
+    "performance": {
+      "hits": 1,
+      "of": 1
+    },
+    "security": {
+      "hits": 5,
+      "of": 5
+    }
+  },
+  "byOrigin": {
+    "real": {
+      "hits": 5,
+      "of": 6
+    },
+    "invented": {
+      "hits": 6,
+      "of": 6
+    }
+  },
+  "byKind": {
+    "commission": {
+      "hits": 8,
+      "of": 8
+    },
+    "omission": {
+      "hits": 3,
+      "of": 4
+    }
+  },
+  "decoyAlarms": {
+    "alarms": 0,
+    "of": 8
+  },
+  "excess": 5,
+  "missed": [
+    "E03"
+  ],
+  "perDefect": [
+    {
+      "id": "E01",
+      "pr": 1,
+      "category": "correctness",
+      "origin": "real",
+      "kind": "commission",
+      "hit": true,
+      "by": [
+        "sort-ignores-currency"
+      ]
+    },
+    {
+      "id": "E02",
+      "pr": 1,
+      "category": "correctness",
+      "origin": "invented",
+      "kind": "commission",
+      "hit": true,
+      "by": [
+        "discount-threshold-off-by-one"
+      ]
+    },
+    {
+      "id": "E03",
+      "pr": 1,
+      "category": "missing_tests",
+      "origin": "real",
+      "kind": "omission",
+      "hit": false,
+      "by": []
+    },
+    {
+      "id": "E04",
+      "pr": 1,
+      "category": "correctness",
+      "origin": "invented",
+      "kind": "omission",
+      "hit": true,
+      "by": [
+        "silent-skip-unquotable-line"
+      ]
+    },
+    {
+      "id": "E05",
+      "pr": 2,
+      "category": "correctness",
+      "origin": "real",
+      "kind": "commission",
+      "hit": true,
+      "by": [
+        "utc-date-as-local-date"
+      ]
+    },
+    {
+      "id": "E06",
+      "pr": 2,
+      "category": "correctness",
+      "origin": "invented",
+      "kind": "commission",
+      "hit": true,
+      "by": [
+        "mutates-input-argument"
+      ]
+    },
+    {
+      "id": "E07",
+      "pr": 2,
+      "category": "performance",
+      "origin": "invented",
+      "kind": "commission",
+      "hit": true,
+      "by": [
+        "repeated-set-construction"
+      ]
+    },
+    {
+      "id": "E08",
+      "pr": 3,
+      "category": "security",
+      "origin": "real",
+      "kind": "omission",
+      "hit": true,
+      "by": [
+        "incomplete-input-validation"
+      ]
+    },
+    {
+      "id": "E09",
+      "pr": 3,
+      "category": "security",
+      "origin": "real",
+      "kind": "omission",
+      "hit": true,
+      "by": [
+        "undocumented-public-endpoint",
+        "unbounded-request-body"
+      ]
+    },
+    {
+      "id": "E10",
+      "pr": 3,
+      "category": "security",
+      "origin": "invented",
+      "kind": "commission",
+      "hit": true,
+      "by": [
+        "unsafe-input-reflected"
+      ]
+    },
+    {
+      "id": "E11",
+      "pr": 4,
+      "category": "security",
+      "origin": "real",
+      "kind": "commission",
+      "hit": true,
+      "by": [
+        "pull-request-target-untrusted-checkout"
+      ]
+    },
+    {
+      "id": "E12",
+      "pr": 4,
+      "category": "security",
+      "origin": "invented",
+      "kind": "commission",
+      "hit": true,
+      "by": [
+        "shell-command-injection",
+        "new-script-without-tests"
+      ]
+    }
+  ],
+  "decoyDetail": [],
+  "excessDetail": [
+    {
+      "pr": 1,
+      "rule_id": "missing-boundary-and-summary-tests",
+      "category": "missing_tests",
+      "severity": "advisory",
+      "at": "tests/paquetes.test.ts:11",
+      "message": "Los tests de `descuentoPorCantidad` solo cubren 1 y 40, por lo que no detectan los umbrales 5 y 20 documentados. Tampoco hay tests de `resumenLote`, de un lote con descuento aplicado ni de una línea s"
+    },
+    {
+      "pr": 2,
+      "rule_id": "hardcoded-holiday-list",
+      "category": "correctness",
+      "severity": "info",
+      "at": "src/entrega.ts:3",
+      "message": "La lista de feriados solo cubre 2026. Para fechas de 2027 en adelante los feriados no se saltan y fechaDeEntrega devolverá fechas de entrega erróneas sin ningún aviso."
+    },
+    {
+      "pr": 2,
+      "rule_id": "missing-tests-vigencia",
+      "category": "missing_tests",
+      "severity": "info",
+      "at": "src/entrega.ts:12",
+      "message": "hoyIso y pedidoVigente son lógica nueva exportada y no tienen test en tests/entrega.test.ts (tampoco el caso de una hora cercana a medianoche, donde UTC y calendario local difieren). Tampoco se prueba"
+    },
+    {
+      "pr": 3,
+      "rule_id": "missing-test-coverage",
+      "category": "missing_tests",
+      "severity": "advisory",
+      "at": "tests/api-lotes.test.ts:23",
+      "message": "Los tests no cubren: etiqueta con caracteres de control o más de 200 caracteres, el tipo de la nota (no string), un payload inválido dentro de un evento del lote, ni que el mensaje de error no refleje"
+    },
+    {
+      "pr": 4,
+      "rule_id": "path-traversal",
+      "category": "security",
+      "severity": "advisory",
+      "at": "scripts/comprimir_tarifas.py:34",
+      "message": "El argumento se usa sin comprobar que el archivo quede dentro de data/. Valores como `../secreto` o rutas absolutas comprimen archivos fuera de DATA_DIR. El script hermano importar_tarifas.py resuelve"
+    }
+  ]
+}

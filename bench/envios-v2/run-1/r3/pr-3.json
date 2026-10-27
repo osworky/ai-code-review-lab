@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "findings": [
+    {
+      "rule_id": "error-echoes-user-input",
+      "category": "security",
+      "severity": "advisory",
+      "location": {
+        "file": "src/api-lotes.ts",
+        "line": 28
+      },
+      "message": "El mensaje de error devuelve al cliente el valor rechazado de `etiqueta`, que por definición puede contener caracteres de control, HTML o ser muy largo (la comprobación de longitud falla justo con textos grandes). Se refleja entrada no confiable en la respuesta y puede acabar en logs o en una interfaz.",
+      "suggested_fix": "Devolver un error fijo como `evento ${indice}: etiqueta` sin incluir el valor recibido."
+    },
+    {
+      "rule_id": "unvalidated-free-text",
+      "category": "security",
+      "severity": "advisory",
+      "location": {
+        "file": "src/api-lotes.ts",
+        "line": 30
+      },
+      "message": "El campo `nota` solo se comprueba como string: no pasa por `textoSeguro`, así que acepta longitud ilimitada, caracteres de control y marcas HTML, justo lo que se rechaza en `etiqueta`. En una ruta pública sin sesión esto deja una vía para inyectar saltos de línea en el registro o HTML en el reporte.",
+      "suggested_fix": "Validar `nota` con `textoSeguro(nota)` igual que `etiqueta`."
+    },
+    {
+      "rule_id": "undocumented-endpoint",
+      "category": "documentation",
+      "severity": "advisory",
+      "location": {
+        "file": "src/api-lotes.ts",
+        "line": 39
+      },
+      "message": "Se añade el endpoint POST /eventos/lote con límites (50 eventos, 200 caracteres) y códigos 400/422, pero el diff no actualiza `docs/api.md`, que según el contexto describe el contrato de la API pública.",
+      "suggested_fix": "Documentar en `docs/api.md` la forma del cuerpo, los límites, los campos `etiqueta` y `nota`, y los códigos de respuesta."
+    },
+    {
+      "rule_id": "unbounded-body-size",
+      "category": "security",
+      "severity": "advisory",
+      "location": {
+        "file": "src/api-lotes.ts",
+        "line": 43
+      },
+      "message": "`manejarSolicitud` hace `JSON.parse` sobre el texto completo sin limitar su tamaño antes, y el límite de 50 eventos solo se aplica después de parsear. Los parámetros `encabezados` no se usan (ni tipo de contenido ni longitud). Una solicitud enorme se procesa entera en una ruta pública. No se ve el servidor que la invoca, que podría limitar el cuerpo antes.",
+      "suggested_fix": "Rechazar con 413/400 si `texto.length` supera un máximo razonable antes de parsear, o confirmar que el servidor ya lo limita."
+    },
+    {
+      "rule_id": "missing-test-coverage",
+      "category": "missing_tests",
+      "severity": "info",
+      "location": {
+        "file": "tests/api-lotes.test.ts",
+        "line": 23
+      },
+      "message": "Los tests solo cubren una etiqueta con HTML. No hay pruebas para `nota` (tipo no string, texto inseguro), etiquetas con caracteres de control o de más de 200 caracteres, ni un payload inválido dentro de un evento del lote.",
+      "suggested_fix": "Añadir casos para `nota`, para el límite de 200 caracteres, para caracteres de control y para un payload con clave reservada."
+    }
+  ]
+}

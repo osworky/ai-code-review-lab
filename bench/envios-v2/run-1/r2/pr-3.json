@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "findings": [
+    {
+      "rule_id": "reflected-untrusted-input",
+      "category": "security",
+      "severity": "blocker",
+      "location": {
+        "file": "src/api-lotes.ts",
+        "line": 28
+      },
+      "message": "El mensaje de error devuelve la etiqueta rechazada tal cual. Se rechaza justamente por tener caracteres de control, marcas HTML o más de 200 caracteres, así que en una ruta pública sin sesión se refleja al cliente (y probablemente al registro) texto sin sanear y de longitud ilimitada. Esto contradice la intención declarada en la línea 6 de que los caracteres de control no lleguen al registro ni al reporte.",
+      "suggested_fix": "No incluir el valor en el error: devolver solo `evento ${indice}: etiqueta`."
+    },
+    {
+      "rule_id": "inconsistent-text-validation",
+      "category": "security",
+      "severity": "advisory",
+      "location": {
+        "file": "src/api-lotes.ts",
+        "line": 30
+      },
+      "message": "`nota` solo se comprueba como string: no tiene límite de longitud ni se rechazan caracteres de control o marcas HTML, a diferencia de `etiqueta`. Un campo de texto libre de la misma API pública queda sin la barrera que se aplica al otro.",
+      "suggested_fix": "Validar `nota` con `textoSeguro` igual que `etiqueta` (o documentar por qué admite texto libre)."
+    },
+    {
+      "rule_id": "undocumented-endpoint",
+      "category": "documentation",
+      "severity": "advisory",
+      "location": {
+        "file": "src/api-lotes.ts",
+        "line": 39
+      },
+      "message": "Se añade el endpoint POST /eventos/lote y las funciones exportadas `validarLote` y `manejarSolicitud`, pero el diff no modifica `docs/api.md`, que según el contexto describe el contrato de la API (límites, códigos 400/422, forma de los errores).",
+      "suggested_fix": "Documentar el endpoint, el límite de 50 eventos, los códigos de respuesta y el formato de error en docs/api.md."
+    },
+    {
+      "rule_id": "unbounded-request-body",
+      "category": "performance",
+      "severity": "advisory",
+      "location": {
+        "file": "src/api-lotes.ts",
+        "line": 43
+      },
+      "message": "`JSON.parse` se ejecuta sobre un texto sin límite de tamaño; el límite de 50 eventos se aplica solo después de parsear, de modo que un cuerpo enorme se procesa completo antes de rechazarse. No se ve en el diff si un servidor o proxy limita el cuerpo antes.",
+      "suggested_fix": "Rechazar con 413/400 si `texto.length` supera un máximo razonable antes de llamar a `JSON.parse`."
+    },
+    {
+      "rule_id": "missing-validation-tests",
+      "category": "missing_tests",
+      "severity": "advisory",
+      "location": {
+        "file": "tests/api-lotes.test.ts",
+        "line": 23
+      },
+      "message": "Los tests no cubren la validación de `nota` (tipo no string), etiquetas con caracteres de control o de más de 200 caracteres, ni un payload inválido dentro de un lote. Tampoco comprueban que el mensaje de error no refleje la etiqueta rechazada.",
+      "suggested_fix": "Añadir casos para nota no string, etiqueta con salto de línea, etiqueta larga, payload con clave reservada y verificar que el error no contiene el valor enviado."
+    },
+    {
+      "rule_id": "unused-parameter",
+      "category": "style",
+      "severity": "info",
+      "location": {
+        "file": "src/api-lotes.ts",
+        "line": 40
+      },
+      "message": "El parámetro `encabezados` no se usa en `manejarSolicitud`. Si se esperaba validar Content-Type o autenticación, esa barrera falta; si no, es código muerto.",
+      "suggested_fix": "Usarlo (por ejemplo validar el Content-Type) o eliminarlo de la firma."
+    }
+  ]
+}

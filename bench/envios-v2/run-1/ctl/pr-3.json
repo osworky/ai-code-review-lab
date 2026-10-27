@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "findings": [
+    {
+      "rule_id": "input-reflected-in-error",
+      "category": "security",
+      "severity": "advisory",
+      "location": {
+        "file": "src/api-lotes.ts",
+        "line": 28
+      },
+      "message": "Cuando la etiqueta es inválida, el mensaje de error devuelve el valor recibido tal cual. Ese valor es justo el que falló por tener caracteres de control, marcas HTML o exceder el límite, así que se refleja en la respuesta 422 (y probablemente en registros) sin sanear. Es una ruta pública sin sesión y el propio código declara que esos caracteres no deben llegar al registro ni al reporte.",
+      "suggested_fix": "No incluir el valor en el error: devolver solo `evento ${indice}: etiqueta`, como se hace con `nota` y con los demás campos."
+    },
+    {
+      "rule_id": "inconsistent-text-validation",
+      "category": "security",
+      "severity": "advisory",
+      "location": {
+        "file": "src/api-lotes.ts",
+        "line": 30
+      },
+      "message": "`nota` solo se valida como string: no pasa por `textoSeguro`, de modo que acepta longitud ilimitada, caracteres de control y marcas HTML, justo lo que se bloquea en `etiqueta`. La barrera de saneamiento queda a medias para un campo de texto libre de la misma API pública.",
+      "suggested_fix": "Aplicar `textoSeguro(nota)` igual que a `etiqueta`, o documentar explícitamente por qué `nota` queda exenta."
+    },
+    {
+      "rule_id": "unbounded-request-body",
+      "category": "security",
+      "severity": "advisory",
+      "location": {
+        "file": "src/api-lotes.ts",
+        "line": 43
+      },
+      "message": "`manejarSolicitud` hace JSON.parse del texto completo sin comprobar antes su tamaño, y el parámetro `encabezados` no se usa (no se revisa Content-Type ni Content-Length). El límite de 50 eventos se aplica solo después de parsear, así que un cuerpo enorme se procesa entero en una ruta pública. Puede que el límite exista en otra capa que no se ve en el diff.",
+      "suggested_fix": "Rechazar con 413/400 cuando `texto.length` supere un máximo razonable antes de parsear, y validar el Content-Type; si el límite lo impone otra capa, quitar el parámetro `encabezados` sin uso o documentarlo."
+    },
+    {
+      "rule_id": "missing-validation-tests",
+      "category": "missing_tests",
+      "severity": "advisory",
+      "location": {
+        "file": "tests/api-lotes.test.ts",
+        "line": 23
+      },
+      "message": "Las pruebas nuevas no cubren varias ramas de la validación de seguridad: etiqueta con caracteres de control o más de 200 caracteres, `nota` no string, el contenido exacto del mensaje de error de etiqueta inválida, el límite superior exacto de 50 eventos ni un payload con claves reservadas dentro de un lote. Solo se prueba la etiqueta con marcas HTML.",
+      "suggested_fix": "Añadir casos para etiqueta con salto de línea, etiqueta de 201 caracteres, `nota` numérica, lote de exactamente 50 eventos y un evento con `__proto__` en el payload."
+    },
+    {
+      "rule_id": "undocumented-endpoint",
+      "category": "documentation",
+      "severity": "info",
+      "location": {
+        "file": "src/api-lotes.ts",
+        "line": 39
+      },
+      "message": "Se añade el endpoint POST /eventos/lote con sus códigos 200/400/422 y los campos `etiqueta` y `nota`, pero el diff no actualiza `docs/api.md`, que según el contexto describe el contrato de la API.",
+      "suggested_fix": "Documentar en docs/api.md el endpoint, el límite de 50 eventos, los campos nuevos y las respuestas de error."
+    }
+  ]
+}

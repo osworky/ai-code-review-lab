@@ -1,0 +1,434 @@
+{
+  "defects": [
+    {
+      "id": "E01",
+      "pr": 1,
+      "category": "correctness",
+      "origin": "real",
+      "kind": "commission",
+      "file": "src/paquetes.ts",
+      "anchor": "a.precio - b.precio",
+      "window": [
+        -3,
+        3
+      ],
+      "summary": "ordenarPorCosto/mejorOpcion ordenan por el precio nominal: mezclan USD y EUR sin convertir",
+      "source": "un proyecto real: orden por precio entre monedas distintas",
+      "ranges": [
+        {
+          "line": 13,
+          "from": 10,
+          "to": 16
+        }
+      ]
+    },
+    {
+      "id": "E02",
+      "pr": 1,
+      "category": "correctness",
+      "origin": "invented",
+      "kind": "commission",
+      "file": "src/paquetes.ts",
+      "anchor": "if (cantidad > 20) return 0.2",
+      "window": [
+        -2,
+        2
+      ],
+      "summary": "El descuento dice 'desde 5 (inclusive)' y 'desde 20 (inclusive)' pero usa > en vez de >=",
+      "ranges": [
+        {
+          "line": 6,
+          "from": 4,
+          "to": 8
+        }
+      ]
+    },
+    {
+      "id": "E03",
+      "pr": 1,
+      "category": "missing_tests",
+      "origin": "real",
+      "kind": "omission",
+      "file": "src/paquetes.ts",
+      "anchor": "export function resumenLote",
+      "window": [
+        -1,
+        6
+      ],
+      "summary": "Funcion publica nueva con logica (plural, redondeo, texto del descuento) sin ningun test",
+      "source": "un proyecto real: logica nueva sin test",
+      "ranges": [
+        {
+          "line": 47,
+          "from": 46,
+          "to": 53
+        }
+      ]
+    },
+    {
+      "id": "E04",
+      "pr": 1,
+      "category": "correctness",
+      "origin": "invented",
+      "kind": "omission",
+      "file": "src/paquetes.ts",
+      "anchor": "for (const linea of lineas) {",
+      "window": [
+        -2,
+        3
+      ],
+      "summary": "cotizarLote no valida las lineas: un peso invalido se omite en silencio y un lote vacio cotiza 0, a diferencia de cotizar() que devuelve null",
+      "ranges": [
+        {
+          "line": 33,
+          "from": 31,
+          "to": 36
+        }
+      ]
+    },
+    {
+      "id": "E05",
+      "pr": 2,
+      "category": "correctness",
+      "origin": "real",
+      "kind": "commission",
+      "file": "src/entrega.ts",
+      "anchor": "return ahora.toISOString().slice(0, 10)",
+      "window": [
+        -2,
+        1
+      ],
+      "summary": "hoyIso usa la fecha en UTC aunque documenta el calendario del cliente: de noche cae en el dia siguiente",
+      "source": "un proyecto real: fecha minima calculada en UTC en el servidor",
+      "ranges": [
+        {
+          "line": 7,
+          "from": 5,
+          "to": 8
+        }
+      ]
+    },
+    {
+      "id": "E06",
+      "pr": 2,
+      "category": "correctness",
+      "origin": "invented",
+      "kind": "commission",
+      "file": "src/entrega.ts",
+      "anchor": "desde.setUTCDate(desde.getUTCDate() + 1)",
+      "window": [
+        -2,
+        3
+      ],
+      "summary": "primerDiaHabil modifica el objeto Date que recibe (efecto lateral sobre quien lo llama)",
+      "ranges": [
+        {
+          "line": 28,
+          "from": 26,
+          "to": 31
+        }
+      ]
+    },
+    {
+      "id": "E07",
+      "pr": 2,
+      "category": "performance",
+      "origin": "invented",
+      "kind": "commission",
+      "file": "src/entrega.ts",
+      "anchor": "const feriados = new Set(FERIADOS)",
+      "window": [
+        -1,
+        1
+      ],
+      "summary": "esFeriado arma un Set nuevo en cada llamada, y se llama dentro de bucles",
+      "ranges": [
+        {
+          "line": 16,
+          "from": 15,
+          "to": 17
+        }
+      ]
+    },
+    {
+      "id": "E08",
+      "pr": 3,
+      "category": "security",
+      "origin": "real",
+      "kind": "omission",
+      "file": "src/api-lotes.ts",
+      "anchor": "typeof nota !== \"string\"",
+      "window": [
+        0,
+        2
+      ],
+      "summary": "El campo nota solo se comprueba como texto: sin limite, sin caracteres de control ni marcas HTML, a diferencia de etiqueta",
+      "source": "un proyecto real: texto con caracteres de control o HTML aceptado",
+      "ranges": [
+        {
+          "line": 30,
+          "from": 30,
+          "to": 32
+        }
+      ]
+    },
+    {
+      "id": "E09",
+      "pr": 3,
+      "category": "security",
+      "origin": "real",
+      "kind": "omission",
+      "file": "src/api-lotes.ts",
+      "anchor": "export function manejarSolicitud",
+      "window": [
+        -1,
+        8
+      ],
+      "summary": "manejarSolicitud recibe las cabeceras pero no exige Content-Type application/json",
+      "source": "un proyecto real: ruta que lee el cuerpo sin mirar el tipo de contenido",
+      "ranges": [
+        {
+          "line": 40,
+          "from": 39,
+          "to": 48
+        }
+      ]
+    },
+    {
+      "id": "E10",
+      "pr": 3,
+      "category": "security",
+      "origin": "invented",
+      "kind": "commission",
+      "file": "src/api-lotes.ts",
+      "anchor": "etiqueta invalida: ${etiqueta}",
+      "window": [
+        -1,
+        0
+      ],
+      "summary": "El error devuelve la etiqueta rechazada tal cual: refleja al cliente texto con caracteres de control o HTML",
+      "ranges": [
+        {
+          "line": 28,
+          "from": 27,
+          "to": 28
+        }
+      ]
+    },
+    {
+      "id": "E11",
+      "pr": 4,
+      "category": "security",
+      "origin": "real",
+      "kind": "commission",
+      "file": ".github/workflows/preview.yml",
+      "anchor": "pull_request_target:",
+      "window": [
+        -1,
+        1
+      ],
+      "also": [
+        {
+          "anchor": "ref: ${{ github.event.pull_request.head.sha }}",
+          "window": [
+            -2,
+            1
+          ]
+        },
+        {
+          "anchor": "PREVIEW_TOKEN: ${{ secrets.PREVIEW_TOKEN }}",
+          "window": [
+            -2,
+            1
+          ]
+        }
+      ],
+      "summary": "pull_request_target con checkout del codigo del PR, npm ci y un build con acceso a un secreto: ejecuta codigo no confiable con secretos",
+      "source": "un proyecto real: workflow con secretos y codigo del PR",
+      "ranges": [
+        {
+          "line": 4,
+          "from": 3,
+          "to": 5
+        },
+        {
+          "line": 18,
+          "from": 16,
+          "to": 19
+        },
+        {
+          "line": 25,
+          "from": 23,
+          "to": 26
+        }
+      ]
+    },
+    {
+      "id": "E12",
+      "pr": 4,
+      "category": "security",
+      "origin": "invented",
+      "kind": "commission",
+      "file": "scripts/comprimir_tarifas.py",
+      "anchor": "subprocess.run(f\"gzip -k {DATA_DIR}/{nombre}\", shell=True, check=True)",
+      "window": [
+        -2,
+        1
+      ],
+      "summary": "Inyeccion de comandos: el nombre del archivo entra en una orden con shell=True",
+      "ranges": [
+        {
+          "line": 26,
+          "from": 24,
+          "to": 27
+        }
+      ]
+    }
+  ],
+  "decoys": [
+    {
+      "id": "T01",
+      "pr": 1,
+      "file": "src/cotizar.ts",
+      "anchor": "export function enDolares(tarifa: Tarifa)",
+      "window": [
+        0,
+        2
+      ],
+      "summary": "Renombrar el parametro t por tarifa",
+      "ranges": [
+        {
+          "line": 8,
+          "from": 8,
+          "to": 10
+        }
+      ]
+    },
+    {
+      "id": "T02",
+      "pr": 1,
+      "file": "src/cotizar.ts",
+      "anchor": "con todas las opciones comparadas en la misma moneda",
+      "window": [
+        0,
+        0
+      ],
+      "summary": "Reformular el comentario de masBarata",
+      "ranges": [
+        {
+          "line": 12,
+          "from": 12,
+          "to": 12
+        }
+      ]
+    },
+    {
+      "id": "T03",
+      "pr": 2,
+      "file": "src/fechas.ts",
+      "anchor": "return items.reduce(",
+      "window": [
+        -1,
+        4
+      ],
+      "summary": "Reformatear una llamada sin cambiar su comportamiento",
+      "ranges": [
+        {
+          "line": 20,
+          "from": 19,
+          "to": 24
+        }
+      ]
+    },
+    {
+      "id": "T04",
+      "pr": 2,
+      "file": "src/fechas.ts",
+      "anchor": "const diferenciaMs = ",
+      "window": [
+        0,
+        1
+      ],
+      "summary": "Renombrar la variable local ms por diferenciaMs",
+      "ranges": [
+        {
+          "line": 15,
+          "from": 15,
+          "to": 16
+        }
+      ]
+    },
+    {
+      "id": "T05",
+      "pr": 3,
+      "file": "src/api-eventos.ts",
+      "anchor": "const PROFUNDIDAD_MAXIMA = 4",
+      "window": [
+        -2,
+        0
+      ],
+      "summary": "Extraer el 4 a una constante con nombre",
+      "ranges": [
+        {
+          "line": 7,
+          "from": 5,
+          "to": 7
+        }
+      ]
+    },
+    {
+      "id": "T06",
+      "pr": 3,
+      "file": "tests/api-eventos.test.ts",
+      "anchor": "validarEvento(undefined)",
+      "window": [
+        -1,
+        1
+      ],
+      "summary": "Anadir una comprobacion de un comportamiento que ya existia",
+      "ranges": [
+        {
+          "line": 14,
+          "from": 13,
+          "to": 15
+        }
+      ]
+    },
+    {
+      "id": "T07",
+      "pr": 4,
+      "file": "scripts/importar_tarifas.py",
+      "anchor": "\"\"\"Importa las tarifas desde un CSV que vive dentro de data/.",
+      "window": [
+        0,
+        1
+      ],
+      "summary": "Reformular el texto del docstring",
+      "ranges": [
+        {
+          "line": 1,
+          "from": 1,
+          "to": 2
+        }
+      ]
+    },
+    {
+      "id": "T08",
+      "pr": 4,
+      "file": "scripts/importar_tarifas.py",
+      "anchor": "import sys",
+      "window": [
+        0,
+        1
+      ],
+      "summary": "Reordenar dos importaciones",
+      "ranges": [
+        {
+          "line": 8,
+          "from": 8,
+          "to": 9
+        }
+      ]
+    }
+  ]
+}

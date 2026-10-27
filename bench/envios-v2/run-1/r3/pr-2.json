@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "findings": [
+    {
+      "rule_id": "timezone-utc-instead-of-client-date",
+      "category": "correctness",
+      "severity": "advisory",
+      "location": {
+        "file": "src/entrega.ts",
+        "line": 7
+      },
+      "message": "El comentario dice que devuelve la fecha de hoy en el calendario del cliente, pero toISOString() usa UTC. Para un cliente con huso horario distinto de UTC, cerca de la medianoche devuelve el día equivocado, y pedidoVigente puede marcar como vencido (o vigente) un pedido por un día. No veo en el diff de dónde sale la zona horaria del cliente.",
+      "suggested_fix": "Calcular la fecha con la zona horaria del cliente (por ejemplo Intl.DateTimeFormat con timeZone, o recibir la zona como parámetro) o corregir el comentario si UTC es lo deseado."
+    },
+    {
+      "rule_id": "untested-exported-function",
+      "category": "missing_tests",
+      "severity": "advisory",
+      "location": {
+        "file": "src/entrega.ts",
+        "line": 11
+      },
+      "message": "hoyIso y pedidoVigente son funciones exportadas nuevas con lógica de fechas y no tienen ningún test en tests/entrega.test.ts. Es justo donde está el riesgo de huso horario y de límite (pedido de hoy). Tampoco hay test de diasHabilesEntre que cruce un feriado ni de primerDiaHabil que salte fin de semana o feriado.",
+      "suggested_fix": "Añadir tests para pedidoVigente (ayer, hoy, mañana, cerca de la medianoche), y casos de diasHabilesEntre y primerDiaHabil con feriado y fin de semana."
+    },
+    {
+      "rule_id": "mutates-input-argument",
+      "category": "correctness",
+      "severity": "advisory",
+      "location": {
+        "file": "src/entrega.ts",
+        "line": 28
+      },
+      "message": "primerDiaHabil, función exportada, modifica con setUTCDate el Date que recibe y además lo devuelve. Quien la llame con una fecha que reutiliza (por ejemplo un pedido o una fecha de inicio) verá cambiar su valor sin aviso. fechaDeEntrega evita el problema copiando la fecha, pero otros llamadores no lo harán.",
+      "suggested_fix": "Copiar la fecha al inicio (const actual = new Date(desde)) y operar sobre la copia, o documentar explícitamente que muta el argumento."
+    },
+    {
+      "rule_id": "unbounded-loop-on-input",
+      "category": "performance",
+      "severity": "advisory",
+      "location": {
+        "file": "src/entrega.ts",
+        "line": 39
+      },
+      "message": "fechaDeEntrega valida que dias sea entero no negativo pero no pone tope: un valor muy grande (por ejemplo 1e9) provoca un bucle de ese tamaño que bloquea el hilo. Si dias viene de una entrada externa es un vector de bloqueo. Además esFeriado reconstruye el Set de FERIADOS en cada llamada (línea 16), lo que multiplica el costo dentro de estos bucles.",
+      "suggested_fix": "Limitar dias a un máximo razonable al validar y mover el Set de feriados a una constante de módulo creada una sola vez."
+    },
+    {
+      "rule_id": "hardcoded-holidays-single-year",
+      "category": "correctness",
+      "severity": "info",
+      "location": {
+        "file": "src/entrega.ts",
+        "line": 3
+      },
+      "message": "La lista de feriados solo cubre 2026. Para fechas de 2027 en adelante, o años anteriores, los feriados no se saltan y las fechas de entrega salen sin descontarlos, sin ningún error visible.",
+      "suggested_fix": "Cargar los feriados desde configuración por año o fallar/avisar cuando la fecha cae fuera del rango cubierto."
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-22",
+  "generated": "2026-10-27",
   "note": "Only aggregates. One reviewer model, one labeller, small samples: pilot figures, not a calibration.",
   "precision": {
     "scope": "five experiments over real code",
@@ -362,11 +362,139 @@
       }
     },
     "v2": {
-      "status": "built",
-      "defects": 12,
+      "status": "run",
       "prs": 4,
+      "defects": 12,
       "decoys": 8,
-      "note": "results pending"
+      "runs": [
+        {
+          "run": "r1",
+          "recall": {
+            "hits": 11,
+            "of": 12
+          },
+          "real": {
+            "hits": 5,
+            "of": 6
+          },
+          "invented": {
+            "hits": 6,
+            "of": 6
+          },
+          "commission": {
+            "hits": 8,
+            "of": 8
+          },
+          "omission": {
+            "hits": 3,
+            "of": 4
+          },
+          "decoyAlarms": {
+            "alarms": 0,
+            "of": 8
+          },
+          "excess": 5,
+          "missed": [
+            "E03"
+          ]
+        },
+        {
+          "run": "r2",
+          "recall": {
+            "hits": 11,
+            "of": 12
+          },
+          "real": {
+            "hits": 5,
+            "of": 6
+          },
+          "invented": {
+            "hits": 6,
+            "of": 6
+          },
+          "commission": {
+            "hits": 8,
+            "of": 8
+          },
+          "omission": {
+            "hits": 3,
+            "of": 4
+          },
+          "decoyAlarms": {
+            "alarms": 0,
+            "of": 8
+          },
+          "excess": 5,
+          "missed": [
+            "E03"
+          ]
+        },
+        {
+          "run": "r3",
+          "recall": {
+            "hits": 10,
+            "of": 12
+          },
+          "real": {
+            "hits": 5,
+            "of": 6
+          },
+          "invented": {
+            "hits": 5,
+            "of": 6
+          },
+          "commission": {
+            "hits": 7,
+            "of": 8
+          },
+          "omission": {
+            "hits": 3,
+            "of": 4
+          },
+          "decoyAlarms": {
+            "alarms": 0,
+            "of": 8
+          },
+          "excess": 5,
+          "missed": [
+            "E03",
+            "E07"
+          ]
+        }
+      ],
+      "control": {
+        "run": "ctl",
+        "recall": {
+          "hits": 11,
+          "of": 12
+        },
+        "real": {
+          "hits": 5,
+          "of": 6
+        },
+        "invented": {
+          "hits": 6,
+          "of": 6
+        },
+        "commission": {
+          "hits": 8,
+          "of": 8
+        },
+        "omission": {
+          "hits": 3,
+          "of": 4
+        },
+        "decoyAlarms": {
+          "alarms": 1,
+          "of": 8
+        },
+        "excess": 4,
+        "missed": [
+          "E03"
+        ]
+      },
+      "excessTopics": 6,
+      "excessLabels": "pending"
     }
   },
   "triage": {

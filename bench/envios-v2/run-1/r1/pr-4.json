@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "findings": [
+    {
+      "rule_id": "pull-request-target-untrusted-checkout",
+      "category": "security",
+      "severity": "blocker",
+      "location": {
+        "file": ".github/workflows/preview.yml",
+        "line": 18
+      },
+      "message": "El workflow se dispara con pull_request_target (acceso a secretos y token con pull-requests: write) y hace checkout del commit del PR (head.sha), luego ejecuta npm ci, npm run build y npm test. Eso ejecuta codigo controlado por el autor del PR (scripts de package.json, postinstall, tests) en un contexto privilegiado, y PREVIEW_TOKEN se inyecta al paso de build (linea 25), por lo que un PR desde un fork puede exfiltrar el secreto o usar el token de escritura.",
+      "suggested_fix": "Usar el evento pull_request (sin secretos para forks) para construir y probar codigo del PR. Si se necesita pull_request_target, no hacer checkout ni ejecutar codigo del head del PR; separar en dos workflows (build sin secretos y un workflow_run privilegiado que solo publique el resultado) o exigir aprobacion/etiqueta de un mantenedor antes de ejecutar."
+    },
+    {
+      "rule_id": "shell-command-injection",
+      "category": "security",
+      "severity": "blocker",
+      "location": {
+        "file": "scripts/comprimir_tarifas.py",
+        "line": 26
+      },
+      "message": "subprocess.run recibe una cadena construida con f-string y shell=True, y `nombre` viene directo de sys.argv. Un nombre como `x.csv; rm -rf ~` o con espacios y metacaracteres ejecuta comandos arbitrarios del shell. El contexto del proyecto marca los scripts de Python que leen archivos como zona de seguridad.",
+      "suggested_fix": "Pasar una lista de argumentos sin shell: subprocess.run([\"gzip\", \"-k\", \"--\", str(ruta)], check=True)."
+    },
+    {
+      "rule_id": "path-traversal",
+      "category": "security",
+      "severity": "advisory",
+      "location": {
+        "file": "scripts/comprimir_tarifas.py",
+        "line": 34
+      },
+      "message": "El argumento se usa sin comprobar que el archivo quede dentro de data/. Valores como `../secreto` o rutas absolutas comprimen archivos fuera de DATA_DIR. El script hermano importar_tarifas.py resuelve la ruta contra DATA_DIR (según se ve en el diff), pero este no aplica esa barrera.",
+      "suggested_fix": "Resolver DATA_DIR / nombre y verificar con is_relative_to(DATA_DIR.resolve()) y que sea un archivo existente antes de comprimir; rechazar el resto con un mensaje de uso."
+    },
+    {
+      "rule_id": "new-script-without-tests",
+      "category": "missing_tests",
+      "severity": "info",
+      "location": {
+        "file": "scripts/comprimir_tarifas.py",
+        "line": 24
+      },
+      "message": "Script nuevo con lógica (comprimir, tamano_legible, manejo de argumentos) y sin pruebas en el diff. Los tests viven en tests/ y no aparece ninguno nuevo.",
+      "suggested_fix": "Añadir pruebas de tamano_legible en sus umbrales y de comprimir rechazando nombres fuera de data/ o con metacaracteres."
+    }
+  ]
+}

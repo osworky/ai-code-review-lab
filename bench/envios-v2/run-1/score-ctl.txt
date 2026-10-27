@@ -1,0 +1,8 @@
+Hallazgos: 18
+Recall: 11 de 12
+Por categoria: correctness 5 de 5 | missing_tests 0 de 1 | performance 1 de 1 | security 5 de 5
+Por origen:    real 5 de 6 | invented 6 de 6
+Por tipo:      commission 8 de 8 | omission 3 de 4
+Alarmas en cambios inofensivos: 1 (de 8 cambios inofensivos)
+Exceso (a etiquetar): 4
+No vistos: E03

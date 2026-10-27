@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "findings": [
+    {
+      "rule_id": "utc-date-instead-of-client-calendar",
+      "category": "correctness",
+      "severity": "advisory",
+      "location": {
+        "file": "src/entrega.ts",
+        "line": 7
+      },
+      "message": "El comentario dice que devuelve la fecha de hoy en el calendario del cliente, pero toISOString() da la fecha en UTC. Para un cliente con desfase respecto a UTC, durante varias horas al día 'hoy' es el día siguiente o el anterior, y pedidoVigente puede marcar como vencido un pedido de hoy o como vigente uno de ayer. El diff no muestra la zona horaria del cliente, así que depende de cómo se use.",
+      "suggested_fix": "Calcular año, mes y día con la zona del cliente (getFullYear/getMonth/getDate en local, o Intl.DateTimeFormat con la zona) en lugar de toISOString, o corregir el comentario si se quiere UTC."
+    },
+    {
+      "rule_id": "missing-tests-for-new-logic",
+      "category": "missing_tests",
+      "severity": "advisory",
+      "location": {
+        "file": "src/entrega.ts",
+        "line": 11
+      },
+      "message": "hoyIso y pedidoVigente no tienen tests. Tampoco hay casos de fechaDeEntrega con dias = 0 ni con fecha de inicio en fin de semana o feriado, ni de diasHabilesEntre que cruce un feriado. Son los casos límite donde fallan los cálculos de fechas de entrega.",
+      "suggested_fix": "Añadir tests para pedidoVigente cerca de la medianoche, fechaDeEntrega con 0 días e inicio inhábil, y diasHabilesEntre sobre un feriado."
+    },
+    {
+      "rule_id": "mutates-input-argument",
+      "category": "correctness",
+      "severity": "advisory",
+      "location": {
+        "file": "src/entrega.ts",
+        "line": 28
+      },
+      "message": "primerDiaHabil es exportada y modifica con setUTCDate el Date que recibe, además de devolverlo. Un llamador que conserve su fecha original la verá cambiada sin aviso. fechaDeEntrega no se ve afectada porque pasa una copia, pero otros usos sí.",
+      "suggested_fix": "Copiar la fecha al inicio (const actual = new Date(desde)) y operar sobre la copia, o documentar que muta el argumento."
+    },
+    {
+      "rule_id": "hardcoded-holidays-single-year",
+      "category": "correctness",
+      "severity": "info",
+      "location": {
+        "file": "src/entrega.ts",
+        "line": 3
+      },
+      "message": "La lista de feriados solo cubre 2026. Para fechas de 2027 en adelante no se saltará ningún feriado y las fechas de entrega serán erróneas sin ningún aviso.",
+      "suggested_fix": "Documentar el alcance de la lista (o fallar/avisar fuera del año cubierto) y planear su actualización anual o carga desde configuración."
+    },
+    {
+      "rule_id": "set-rebuilt-on-every-call",
+      "category": "performance",
+      "severity": "info",
+      "location": {
+        "file": "src/entrega.ts",
+        "line": 16
+      },
+      "message": "esFeriado construye un Set nuevo a partir de FERIADOS en cada llamada, y se invoca dentro de los bucles de primerDiaHabil, fechaDeEntrega y diasHabilesEntre. Es trabajo repetido sin necesidad.",
+      "suggested_fix": "Declarar el Set una sola vez a nivel de módulo: const FERIADOS_SET = new Set(FERIADOS)."
+    }
+  ]
+}

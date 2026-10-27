@@ -1,0 +1,230 @@
+{
+  "findings": 18,
+  "recall": {
+    "hits": 10,
+    "of": 12
+  },
+  "byCategory": {
+    "correctness": {
+      "hits": 5,
+      "of": 5
+    },
+    "missing_tests": {
+      "hits": 0,
+      "of": 1
+    },
+    "performance": {
+      "hits": 0,
+      "of": 1
+    },
+    "security": {
+      "hits": 5,
+      "of": 5
+    }
+  },
+  "byOrigin": {
+    "real": {
+      "hits": 5,
+      "of": 6
+    },
+    "invented": {
+      "hits": 5,
+      "of": 6
+    }
+  },
+  "byKind": {
+    "commission": {
+      "hits": 7,
+      "of": 8
+    },
+    "omission": {
+      "hits": 3,
+      "of": 4
+    }
+  },
+  "decoyAlarms": {
+    "alarms": 0,
+    "of": 8
+  },
+  "excess": 5,
+  "missed": [
+    "E03",
+    "E07"
+  ],
+  "perDefect": [
+    {
+      "id": "E01",
+      "pr": 1,
+      "category": "correctness",
+      "origin": "real",
+      "kind": "commission",
+      "hit": true,
+      "by": [
+        "sort-ignores-currency"
+      ]
+    },
+    {
+      "id": "E02",
+      "pr": 1,
+      "category": "correctness",
+      "origin": "invented",
+      "kind": "commission",
+      "hit": true,
+      "by": [
+        "discount-threshold-off-by-one"
+      ]
+    },
+    {
+      "id": "E03",
+      "pr": 1,
+      "category": "missing_tests",
+      "origin": "real",
+      "kind": "omission",
+      "hit": false,
+      "by": []
+    },
+    {
+      "id": "E04",
+      "pr": 1,
+      "category": "correctness",
+      "origin": "invented",
+      "kind": "omission",
+      "hit": true,
+      "by": [
+        "unquoted-lines-silently-dropped"
+      ]
+    },
+    {
+      "id": "E05",
+      "pr": 2,
+      "category": "correctness",
+      "origin": "real",
+      "kind": "commission",
+      "hit": true,
+      "by": [
+        "timezone-utc-instead-of-client-date"
+      ]
+    },
+    {
+      "id": "E06",
+      "pr": 2,
+      "category": "correctness",
+      "origin": "invented",
+      "kind": "commission",
+      "hit": true,
+      "by": [
+        "mutates-input-argument"
+      ]
+    },
+    {
+      "id": "E07",
+      "pr": 2,
+      "category": "performance",
+      "origin": "invented",
+      "kind": "commission",
+      "hit": false,
+      "by": []
+    },
+    {
+      "id": "E08",
+      "pr": 3,
+      "category": "security",
+      "origin": "real",
+      "kind": "omission",
+      "hit": true,
+      "by": [
+        "unvalidated-free-text"
+      ]
+    },
+    {
+      "id": "E09",
+      "pr": 3,
+      "category": "security",
+      "origin": "real",
+      "kind": "omission",
+      "hit": true,
+      "by": [
+        "undocumented-endpoint",
+        "unbounded-body-size"
+      ]
+    },
+    {
+      "id": "E10",
+      "pr": 3,
+      "category": "security",
+      "origin": "invented",
+      "kind": "commission",
+      "hit": true,
+      "by": [
+        "error-echoes-user-input"
+      ]
+    },
+    {
+      "id": "E11",
+      "pr": 4,
+      "category": "security",
+      "origin": "real",
+      "kind": "commission",
+      "hit": true,
+      "by": [
+        "pull-request-target-untrusted-checkout",
+        "unpinned-third-party-action"
+      ]
+    },
+    {
+      "id": "E12",
+      "pr": 4,
+      "category": "security",
+      "origin": "invented",
+      "kind": "commission",
+      "hit": true,
+      "by": [
+        "shell-command-injection",
+        "missing-tests-new-script"
+      ]
+    }
+  ],
+  "decoyDetail": [],
+  "excessDetail": [
+    {
+      "pr": 1,
+      "rule_id": "missing-boundary-and-currency-tests",
+      "category": "missing_tests",
+      "severity": "advisory",
+      "at": "tests/paquetes.test.ts:11",
+      "message": "Los tests de descuento solo prueban 1 y 40; no cubren los umbrales 5 y 20, justo donde está el error. Tampoco hay test de ordenarPorCosto con monedas distintas, de cotizarLote con descuento ni con una"
+    },
+    {
+      "pr": 2,
+      "rule_id": "untested-exported-function",
+      "category": "missing_tests",
+      "severity": "advisory",
+      "at": "src/entrega.ts:11",
+      "message": "hoyIso y pedidoVigente son funciones exportadas nuevas con lógica de fechas y no tienen ningún test en tests/entrega.test.ts. Es justo donde está el riesgo de huso horario y de límite (pedido de hoy)."
+    },
+    {
+      "pr": 2,
+      "rule_id": "unbounded-loop-on-input",
+      "category": "performance",
+      "severity": "advisory",
+      "at": "src/entrega.ts:39",
+      "message": "fechaDeEntrega valida que dias sea entero no negativo pero no pone tope: un valor muy grande (por ejemplo 1e9) provoca un bucle de ese tamaño que bloquea el hilo. Si dias viene de una entrada externa "
+    },
+    {
+      "pr": 2,
+      "rule_id": "hardcoded-holidays-single-year",
+      "category": "correctness",
+      "severity": "info",
+      "at": "src/entrega.ts:3",
+      "message": "La lista de feriados solo cubre 2026. Para fechas de 2027 en adelante, o años anteriores, los feriados no se saltan y las fechas de entrega salen sin descontarlos, sin ningún error visible."
+    },
+    {
+      "pr": 3,
+      "rule_id": "missing-test-coverage",
+      "category": "missing_tests",
+      "severity": "info",
+      "at": "tests/api-lotes.test.ts:23",
+      "message": "Los tests solo cubren una etiqueta con HTML. No hay pruebas para `nota` (tipo no string, texto inseguro), etiquetas con caracteres de control o de más de 200 caracteres, ni un payload inválido dentro "
+    }
+  ]
+}
