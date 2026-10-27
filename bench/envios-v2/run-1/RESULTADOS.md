@@ -29,16 +29,16 @@ Unión de las tres corridas: 11 de 12. Consenso (visto en al menos 2 de 3): 11 d
 | H5. El solapamiento entre corridas será mayor que 0,3 | **Se sostiene**, y de sobra (0,89 a 1,0) |
 
 ## Exceso (a etiquetar por una persona)
-Son 19 hallazgos que no caen en ningún defecto ni en ningún cambio inofensivo, que se reducen a **6 temas**. No se cuentan como errores: pueden ser problemas reales que nadie plantó. Etiquetas pendientes (A real y accionable, M real pero menor, R ruido).
+Son 19 hallazgos que no caen en ningún defecto ni en ningún cambio inofensivo, que se reducen a **6 temas**. No se cuentan como errores: pueden ser problemas reales que nadie plantó. Etiquetados por una persona el 2026-10-27 (A real y accionable, M real pero menor, R ruido): 2 A, 4 M, 0 R.
 
 | # | PR | Tema | Corridas | Etiqueta |
 |---|---|---|---|---|
-| 1 | 1 | Los tests del descuento solo prueban 1 y 40 (no los umbrales 5 y 20), ni monedas distintas, ni `resumenLote` | r1, r2, r3, ctl | pendiente |
-| 2 | 2 | La lista de feriados solo cubre 2026 | r1, r2, r3, ctl | pendiente |
-| 3 | 2 | `hoyIso` y `pedidoVigente` no tienen tests | r1, r2, r3, ctl | pendiente |
-| 4 | 2 | `fechaDeEntrega` no tiene un máximo para `dias`: un valor enorme ejecuta un bucle enorme | r2, r3 | pendiente |
-| 5 | 3 | Los tests no cubren la validación de `nota` (tipo), etiquetas largas o con control, ni un evento inválido dentro del lote | r1, r2, r3, ctl | pendiente |
-| 6 | 4 | `comprimir_tarifas.py`: el argumento no se limita a `data/` (ruta fuera del directorio) | r1 | pendiente |
+| 1 | 1 | Los tests del descuento solo prueban 1 y 40 (no los umbrales 5 y 20), ni monedas distintas, ni `resumenLote` | r1, r2, r3, ctl | A |
+| 2 | 2 | La lista de feriados solo cubre 2026 | r1, r2, r3, ctl | M |
+| 3 | 2 | `hoyIso` y `pedidoVigente` no tienen tests | r1, r2, r3, ctl | M |
+| 4 | 2 | `fechaDeEntrega` no tiene un máximo para `dias`: un valor enorme ejecuta un bucle enorme | r2, r3 | A |
+| 5 | 3 | Los tests no cubren la validación de `nota` (tipo), etiquetas largas o con control, ni un evento inválido dentro del lote | r1, r2, r3, ctl | M |
+| 6 | 4 | `comprimir_tarifas.py`: el argumento no se limita a `data/` (ruta fuera del directorio) | r1 | M |
 
 ## Límites
 12 defectos y 4 PR pequeños (de 68 a 108 líneas): intervalos muy anchos. Un modelo, un dominio, una sola ejecución de 3 corridas más 1 control. La circularidad persiste: los defectos y el revisor son del mismo tipo de modelo. El banco no sirve para decidir si el foco ayuda; para eso habría que endurecerlo otra vez (PR de 150 a 300 líneas con ruido, o defectos repartidos entre varios archivos).

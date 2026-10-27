@@ -494,7 +494,11 @@
         ]
       },
       "excessTopics": 6,
-      "excessLabels": "pending"
+      "excessLabels": {
+        "A": 2,
+        "M": 4,
+        "R": 0
+      }
     }
   },
   "triage": {
